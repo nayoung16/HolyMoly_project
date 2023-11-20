@@ -94,7 +94,6 @@ class MainActivity : AppCompatActivity() {
         }.attach()
 
 
-
         // tabLayout과 viewpager 연결
         binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -123,6 +122,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_flight -> binding.tabLayout.selectTab(binding.tabLayout.getTabAt(4))
             }
         }
+
     }
 
 

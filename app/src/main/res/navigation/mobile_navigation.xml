@@ -20,28 +20,27 @@
     <fragment
         android:id="@+id/nav_md_pick"
         android:name="com.example.holymoly.ui.tab.MDFragment"
-        android:label="@string/app_name"
+        android:label="@string/md_pick"
         tools:layout="@layout/fragment_m_d" />
 
     <fragment
         android:id="@+id/nav_bucket_list"
         android:name="com.example.holymoly.ui.tab.BucketListFragment"
-        android:label="@string/app_name"
+        android:label="@string/bucket_list"
         tools:layout="@layout/fragment_bucket_list"/>
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.holymoly.ui.tab.HomeFragment"
-        android:label="@string/app_name"
+        android:label=""
         tools:layout="@layout/fragment_home"/>
     <fragment
         android:id="@+id/nav_calendar"
         android:name="com.example.holymoly.ui.tab.CalendarFragment"
-        android:label="@string/app_name"
+        android:label="@string/calendar"
         tools:layout="@layout/fragment_calendar"/>
     <fragment
         android:id="@+id/nav_flight"
         android:name="com.example.holymoly.ui.tab.FlightFragment"
-        android:label="@string/app_name"
+        android:label="@string/flight"
         tools:layout="@layout/fragment_flight"/>
-
 </navigation>
