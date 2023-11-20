@@ -9,13 +9,20 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="437dp"
-        android:src="@drawable/home_days" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="2023년의 남은 공휴일 수"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:id="@+id/thisYear" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="50sp"
+        android:textColor="@color/black"
         android:id="@+id/restOfYear" />
     <TextView
         android:layout_width="wrap_content"
@@ -25,10 +32,5 @@
         android:textSize="15sp"
         android:textColor="@color/black"
         android:text="이달의 공휴일"/>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="10dp"
-        android:src="@drawable/home_this_month" />
 
 </LinearLayout>

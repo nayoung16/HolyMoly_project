@@ -2,6 +2,8 @@ package com.example.holymoly
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
+import androidx.activity.result.ActivityResultLauncher
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -113,7 +116,23 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Hide TabLayout and ViewPager when navigating to certain fragments
         navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id in setOf(
+                    R.id.nav_md_pick,
+                    R.id.nav_bucket_list,
+                    R.id.nav_home,
+                    R.id.nav_calendar,
+                    R.id.nav_flight
+                )
+            ) {
+                binding.tabLayout.visibility = View.VISIBLE
+                binding.pager.visibility = View.VISIBLE
+            } else {
+                binding.tabLayout.visibility = View.GONE
+                binding.pager.visibility = View.GONE
+            }
+
             when (destination.id) {
                 R.id.nav_md_pick -> binding.tabLayout.selectTab(binding.tabLayout.getTabAt(0))
                 R.id.nav_bucket_list -> binding.tabLayout.selectTab(binding.tabLayout.getTabAt(1))
