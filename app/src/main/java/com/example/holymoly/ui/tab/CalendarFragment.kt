@@ -1,11 +1,18 @@
 package com.example.holymoly.ui.tab
 
+import android.os.Build.VERSION_CODES.R
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.R
+import com.example.holymoly.databinding.FragmentCalendarBinding
+import java.util.Calendar
+import java.util.Date
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,40 +28,79 @@ class CalendarFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var binding: FragmentCalendarBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // binding 초기화
+        binding = FragmentCalendarBinding.inflate(inflater, container, false)
+
+        // 화면 설정
+        setMonthView()
+
+        binding.preBtn.setOnClickListener{
+            CalendarUtil.selectedDate.add(Calendar.MONTH, -1) // 현재 달 -1
+            setMonthView()
+        }
+
+        binding.nextBtn.setOnClickListener{
+            CalendarUtil.selectedDate.add(Calendar.MONTH, 1) // 현재 달 +1
+            setMonthView()
+        }
+
+        // 날짜 화면에 보여주기
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CalendarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CalendarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun setMonthView() {
+        // 년월 텍스트 뷰 셋팅
+        binding.monthYearText.text = monthYearFromDate(CalendarUtil.selectedDate)
+        // 날짜 생성해서 리스트에 담기
+        val dayList = dayInMonthArray()
+        // 어댑터 초기화
+        val adapter = CalendarAdapter(dayList)
+        // 열 7개 생성
+        var manager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 7)
+        // 레이아웃 적용
+        binding. recyclerView.layoutManager = manager
+        // 어뎁터 적용
+        binding.recyclerView.adapter = adapter
     }
+    // 날짜 타입 설정(월, 년) -> 상단바
+    fun monthYearFromDate(calendar: Calendar): String{
+        var year = calendar.get(Calendar.YEAR)
+        var month = calendar.get(Calendar.MONTH) + 1
+        return "$month 월 $year"
+    }
+    // 날짜 생성
+    fun dayInMonthArray(): ArrayList<Date>{
+        var dayList = ArrayList<Date>()
+        var monthCalendar = CalendarUtil.selectedDate.clone() as Calendar
+        // 1일로 셋팅
+        monthCalendar[Calendar.DAY_OF_MONTH] = 1
+        // 해당 달의 1일의 요일
+        val firstDayOfMonth = monthCalendar[Calendar.DAY_OF_WEEK] - 1
+        // 요일 숫자만큼 이전 날짜로 설정
+        monthCalendar.add(Calendar.DAY_OF_MONTH, -firstDayOfMonth)
+
+        while(dayList.size < 42){
+            dayList.add(monthCalendar.time)
+
+            // 1일씩 늘린다
+            monthCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        return dayList
+    }
+
+
+
 }
