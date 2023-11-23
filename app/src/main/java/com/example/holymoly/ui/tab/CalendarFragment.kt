@@ -79,7 +79,7 @@ class CalendarFragment : Fragment() {
     fun monthYearFromDate(calendar: Calendar): String{
         var year = calendar.get(Calendar.YEAR)
         var month = calendar.get(Calendar.MONTH) + 1
-        return "$month 월 $year"
+        return "${year}년 ${month}월"
     }
     // 날짜 생성
     fun dayInMonthArray(): ArrayList<Date>{
