@@ -1,6 +1,7 @@
 package com.example.holymoly.ui.tab
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,8 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.R
+import com.google.android.material.internal.ContextUtils.getActivity
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Date
@@ -78,10 +82,12 @@ class CalendarAdapter(val dayList: ArrayList<Date>):
         // 날짜 클릭 이벤트
         holder.itemView.setOnClickListener{
             // 인터페이스로 날짜 넘겨주기
+            val intent = Intent(holder.itemView?.context, AddActivity::class.java)
+            ContextCompat.startActivity(holder.itemView.context, intent, null)
 
 
-            var yearMonDay = "$iYear 년 $iMonth 월 $iDay 일"
-            Toast.makeText(holder.itemView.context, yearMonDay, Toast.LENGTH_SHORT).show()
+//            var yearMonDay = "$iYear 년 $iMonth 월 $iDay 일"
+//            Toast.makeText(holder.itemView.context, yearMonDay, Toast.LENGTH_SHORT).show()
         }
     }
 
