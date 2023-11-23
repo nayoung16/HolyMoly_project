@@ -29,7 +29,7 @@ private const val ARG_PARAM2 = "param2"
 
 class MyViewHolder(val binding: ItemMyHolidaysBinding) : RecyclerView.ViewHolder(binding.root)
 
-class MyAdapter(val datas: MutableList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyAdapter(val datas: MutableList<String>, val datas2: MutableList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int {
         return datas.size
     }
@@ -38,9 +38,10 @@ class MyAdapter(val datas: MutableList<String>) : RecyclerView.Adapter<RecyclerV
         MyViewHolder(ItemMyHolidaysBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        Log.d("ny","success")
         val binding = (holder as MyViewHolder).binding
-        binding.itemData.text=datas[position]
+        binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+        binding.itemDataHolidays.text=datas[position]
+        binding.itemDataHolidaysSchedule.text = datas2[position]
     }
 }
 
@@ -59,13 +60,8 @@ class MyDecoration(val context: Context): RecyclerView.ItemDecoration() {
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-        val index = parent.getChildAdapterPosition(view) + 1
 
-        if(index % 3 == 0)
-            outRect.set(10,10,10,60)
-        else
-            outRect.set(10,10,10,0)
-        view.setBackgroundColor(Color.parseColor("#F0E9F9"))
+        outRect.set(10,10,10,0)
         ViewCompat.setElevation(view, 20.0f)
     }
 }
@@ -81,14 +77,12 @@ class MyHolidaysFragment : Fragment() {
     ): View? {
         val binding = FragmentMyHolidaysBinding.inflate(inflater, container, false)
 
-        val datas = mutableListOf<String>()
-        for (i in 1..9) {
-            datas.add("Item $i")
-            // Inflate the layout for this fragment
-        }
+        val datas_holidays = mutableListOf<String>("세부 여행","일정2","일정3")
+        val datas_holidays_schedule = mutableListOf<String>("12월 24일 - 12월 28일","12월 24일 - 12월 28일","12월 24일 - 12월 28일")
+
         val layoutManager = LinearLayoutManager(activity)
         binding.myHolidaysRecyclerView.layoutManager = layoutManager
-        val adapter = MyAdapter(datas)
+        val adapter = MyAdapter(datas_holidays, datas_holidays_schedule)
         binding.myHolidaysRecyclerView.adapter = adapter
         binding.myHolidaysRecyclerView.addItemDecoration(MyDecoration(activity as Context))
         return binding.root

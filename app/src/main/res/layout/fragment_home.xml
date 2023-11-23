@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="년 남은 공휴일 수"
                 android:textSize="30sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/ibmplexsanskr_bold"
                 />
         </LinearLayout>
         <LinearLayout
