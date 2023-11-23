@@ -17,4 +17,6 @@
     <string name="flight">Flight</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="my_holidays_no">아직 일정이 없어요</string>
 </resources>

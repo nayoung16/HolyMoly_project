@@ -5,32 +5,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.tab.HomeFragment">
+    android:gravity="center"
+    tools:context=".ui.tab.HomeFragment"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="@drawable/main_restholiday_view"
+        android:gravity="center"
+        android:layout_weight="2">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginVertical="10dp">
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/solyear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:gravity="center"/>
 
-    <!-- TODO: Update blank fragment layout -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="년 남은 공휴일 수"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:background="@drawable/main_holidays_circle"
+            android:layout_marginVertical="10dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/rest_of_year"
+                android:textSize = "50sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="10dp"
+            android:text="days"
+            android:textSize="40sp"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="2023년의 남은 공휴일 수"
-        android:textSize="30sp"
-        android:textColor="@color/black"
-        android:id="@+id/thisYear" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="50sp"
-        android:textColor="@color/black"
-        android:id="@+id/restOfYear" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:text="이달의 공휴일"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:textSize = "20sp"
+            android:text="이 달의 공휴일"
+            android:layout_marginVertical="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/holydaysOfMonthLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none" />
+    </LinearLayout>
 
 </LinearLayout>
