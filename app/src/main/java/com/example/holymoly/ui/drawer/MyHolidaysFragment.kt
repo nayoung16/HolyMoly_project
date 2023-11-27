@@ -78,7 +78,7 @@ class MyHolidaysFragment : Fragment() {
         val binding = FragmentMyHolidaysBinding.inflate(inflater, container, false)
 
         val datas_holidays = mutableListOf<String>("세부 여행","일정2","일정3")
-        val datas_holidays_schedule = mutableListOf<String>("12월 24일 - 12월 28일","12월 24일 - 12월 28일","12월 24일 - 12월 28일")
+        val datas_holidays_schedule = mutableListOf<String>("12월 24일 - 12월 28일","12월 24일 - 1월 3일","12월 24일 - 12월 28일")
 
         val layoutManager = LinearLayoutManager(activity)
         binding.myHolidaysRecyclerView.layoutManager = layoutManager

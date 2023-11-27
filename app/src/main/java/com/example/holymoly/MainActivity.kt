@@ -1,9 +1,12 @@
 package com.example.holymoly
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -23,13 +26,27 @@ import com.example.holymoly.ui.tab.CalendarFragment
 import com.example.holymoly.ui.tab.FlightFragment
 import com.example.holymoly.ui.tab.HomeFragment
 import com.example.holymoly.ui.tab.MDFragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
+import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private var selectedPage = 0
+
+    // 로그아웃 구현을 위한 변수
+    private lateinit var auth : FirebaseAuth
+    private lateinit var googleSignInClient : GoogleSignInClient
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,6 +159,47 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //로그아웃
+        // 구글 로그아웃을 위해 로그인 세션 가져오기
+        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        // firebaseauth를 사용하기 위한 인스턴스 get
+        auth = FirebaseAuth.getInstance()
+
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+
+        // Get the header view from the NavigationView
+        val headerView: View = navigationView.getHeaderView(0)
+
+        // Find the ImageView inside the header view
+        val signOutImageView: ImageView = headerView.findViewById(R.id.sign_out)
+        signOutImageView.setOnClickListener{
+            Firebase.auth.signOut()
+            googleSignInClient?.signOut()
+
+            googleSignInClient!!.signOut().addOnCompleteListener(this) {
+                startActivity(Intent(this, AuthActivity::class.java))
+            }
+        }
+
+        //이메일과 사용자 정보 가져오기
+        val user: FirebaseUser? = auth.currentUser
+        val headerNameView: TextView = headerView.findViewById(R.id.nav_header_title)
+        val headerEmailView: TextView = headerView.findViewById(R.id.nav_header_subtitle)
+        val headerImageView: ImageView = headerView.findViewById(R.id.nav_imageView)
+        if(user!=null) {
+            headerNameView.text = user.displayName
+            headerEmailView.text = user.email
+            //profile image
+            val photoUrl: Uri? = user.photoUrl
+            if (photoUrl != null) {
+                Picasso.get().load(photoUrl).into(headerImageView)
+            }
+        }
     }
 
 
