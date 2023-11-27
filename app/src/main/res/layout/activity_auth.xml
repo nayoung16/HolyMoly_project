@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF9F9"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".AuthActivity">
+    <ImageView
+        android:id="@+id/auth_calendar_img"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:backgroundTint="#CAB3EA"
+        android:src="@drawable/ic_calendar"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="50sp"
+        android:textColor="#CAB3EA"
+        android:fontFamily="@font/ibmplexsanskr_bold"
+        android:text="@string/app_name_upper"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:fontFamily="@font/ibmplexsanskr_semibold"
+        android:text="@string/welcome"/>
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_googleSignIn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"/>
+</LinearLayout>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "769704873956",
+    "project_id": "holymoly-9b0f9",
+    "storage_bucket": "holymoly-9b0f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769704873956:android:82aa1de77076cabdcd81f1",
+        "android_client_info": {
+          "package_name": "com.example.holymoly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "769704873956-ks95bccdng0ek8btgu9p9ajlllafub6i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holymoly",
+            "certificate_hash": "8554393944952640d21a9e5d1f02f2ab9989bae6"
+          }
+        },
+        {
+          "client_id": "769704873956-m58dvefe6g8f117uekvv71ktqnehmr9f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVWzjJaQ1NqUZPAyaCLO679yOT_G9CDsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "769704873956-m58dvefe6g8f117uekvv71ktqnehmr9f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
