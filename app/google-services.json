@@ -14,11 +14,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "769704873956-ko7qlg6fdmpueb6lkdd11d1meneln2p9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holymoly",
+            "certificate_hash": "8e56c3a8d865d4d9a7208388b731ddbb11e300f5"
+          }
+        },
+        {
           "client_id": "769704873956-ks95bccdng0ek8btgu9p9ajlllafub6i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.holymoly",
             "certificate_hash": "8554393944952640d21a9e5d1f02f2ab9989bae6"
+          }
+        },
+        {
+          "client_id": "769704873956-uahks622vd1hpeqmfj5k1npnpggu1au5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holymoly",
+            "certificate_hash": "241c3af5a82215ca88373d4a7ae1b8d926b5a183"
           }
         },
         {
