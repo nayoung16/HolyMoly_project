@@ -26,13 +26,12 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                 android:gravity="center"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="년 남은 공휴일 수"
-                android:textSize="30sp"
-                android:fontFamily="@font/ibmplexsanskr_bold"
+                android:textSize="20sp"
+                android:fontFamily="@font/ibmplexsanskr_semibold"
                 />
         </LinearLayout>
         <LinearLayout
@@ -78,5 +77,6 @@
             android:layout_height="match_parent"
             android:scrollbars="none" />
     </LinearLayout>
+
 
 </LinearLayout>

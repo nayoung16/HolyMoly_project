@@ -1,10 +1,12 @@
 package com.example.holymoly
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
@@ -29,8 +31,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.squareup.picasso.Picasso
+import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
 
@@ -178,6 +183,21 @@ class MainActivity : AppCompatActivity() {
 
             googleSignInClient!!.signOut().addOnCompleteListener(this) {
                 startActivity(Intent(this, AuthActivity::class.java))
+            }
+        }
+
+        //이메일과 사용자 정보 가져오기
+        val user: FirebaseUser? = auth.currentUser
+        val headerNameView: TextView = headerView.findViewById(R.id.nav_header_title)
+        val headerEmailView: TextView = headerView.findViewById(R.id.nav_header_subtitle)
+        val headerImageView: ImageView = headerView.findViewById(R.id.nav_imageView)
+        if(user!=null) {
+            headerNameView.text = user.displayName
+            headerEmailView.text = user.email
+            //profile image
+            val photoUrl: Uri? = user.photoUrl
+            if (photoUrl != null) {
+                Picasso.get().load(photoUrl).into(headerImageView)
             }
         }
     }
