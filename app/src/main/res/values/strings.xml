@@ -27,4 +27,7 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"HOLY MOLY와 함께해 보세요!"</string>
+
+    <string name="holidays_this_month">이 달의 공휴일</string>
+    <string name="holidays_each_month">월별 공휴일 수</string>
 </resources>
