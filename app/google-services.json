@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "769704873956-uahks622vd1hpeqmfj5k1npnpggu1au5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holymoly",
+            "certificate_hash": "241c3af5a82215ca88373d4a7ae1b8d926b5a183"
+          }
+        },
+        {
           "client_id": "769704873956-m58dvefe6g8f117uekvv71ktqnehmr9f.apps.googleusercontent.com",
           "client_type": 3
         }
