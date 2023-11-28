@@ -108,7 +108,7 @@
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="255dp"
+            android:layout_height="300dp"
             android:id="@+id/recyclerView"/>
         <TextView
             android:layout_width="wrap_content"
