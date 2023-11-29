@@ -12,4 +12,6 @@
         android:fontStyle="normal"/>
     <font android:font="@font/ibmplexsanskr_semibold"
         android:fontStyle="normal"/>
+    <font android:font="@font/indieflower_regular"
+        android:fontStyle="normal"/>
 </font-family>

@@ -29,15 +29,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
-                android:gravity="center"/>
+                android:gravity="center" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/ibmplexsanskr_bold"
-                android:text="년 남은 공휴일 수"
-                android:textSize="30sp"
-                android:textStyle="bold"
+                android:fontFamily="@font/ibmplexsanskr_semibold"
+                android:text="@string/rest_holidays_this_year"
+                android:textSize="20sp"
                 />
         </LinearLayout>
         <LinearLayout
@@ -48,7 +47,8 @@
             android:gravity="center">
             <TextView
                 android:id="@+id/rest_of_year"
-                android:textSize = "60sp"
+                android:fontFamily="@font/indieflower_regular"
+                android:textSize = "100sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -56,17 +56,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="10dp"
-            android:fontFamily="@font/ibmplexsanskr_semibold"
-            android:text="days"
-            android:textSize="40sp"
+            android:fontFamily="@font/indieflower_regular"
+            android:text="@string/days"
+            android:textSize="33sp"
             />
     </LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="30dp"
-            android:layout_weight="1"
+            android:layout_marginHorizontal="10dp"
+            android:layout_weight="3"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,6 +73,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:orientation="vertical">
                 <TextView
+                    android:textColor="@color/black"
                     android:textSize = "20sp"
                     android:id="@+id/holydaysOfMonthText"
                     android:fontFamily="@font/ibmplexsanskr_regular"
@@ -94,6 +94,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:orientation="vertical">
                 <TextView
+                    android:textColor="@color/black"
                     android:textSize = "20sp"
                     android:text="@string/holidays_each_month"
                     android:fontFamily="@font/ibmplexsanskr_regular"
