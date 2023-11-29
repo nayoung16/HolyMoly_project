@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.AddActivity
 import com.example.holymoly.R
+import com.example.holymoly.databinding.ActivityAddBinding
 import com.google.android.material.internal.ContextUtils.getActivity
 import java.time.LocalDate
 import java.util.Calendar
@@ -24,7 +25,6 @@ class CalendarAdapter(val dayList: ArrayList<Date>):
         class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
             val dayText: TextView = itemView.findViewById(R.id.dayText)
         }
-
     // 화면 설정
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.calendar_item, parent, false)
@@ -53,12 +53,16 @@ class CalendarAdapter(val dayList: ArrayList<Date>):
         var selectMonth = CalendarUtil.selectedDate.get(Calendar.MONTH) + 1
         var selectDay = CalendarUtil.selectedDate.get(Calendar.DAY_OF_MONTH)
 
-        if (iYear == selectYear && iMonth == selectMonth) {
+        val currentDate = Calendar.getInstance()
+        val todayYear = currentDate.get(Calendar.YEAR)
+        val todayMonth = currentDate.get(Calendar.MONTH) + 1
+
+       if (iYear == selectYear && iMonth == selectMonth) {
             holder.dayText.setTextColor(Color.parseColor("#000000"))
 
             // 현재 날짜 비교해서 같다면 배경색상 변경
-            if (dayNo == selectDay) {
-                holder.itemView.setBackgroundColor(R.color.gblue)
+            if (dayNo == selectDay && todayYear == iYear && todayMonth == iMonth) {
+                holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.gblue))
             }
             // 토 일 색상 변경
             if ((position + 1) % 7 == 0) {
@@ -82,14 +86,14 @@ class CalendarAdapter(val dayList: ArrayList<Date>):
 
         // 날짜 클릭 이벤트
         holder.itemView.setOnClickListener{
-            // 인터페이스로 날짜 넘겨주기
             val intent = Intent(holder.itemView?.context, AddActivity::class.java)
-            ContextCompat.startActivity(holder.itemView.context, intent, null)
-
-
-//            var yearMonDay = "$iYear 년 $iMonth 월 $iDay 일"
-//            Toast.makeText(holder.itemView.context, yearMonDay, Toast.LENGTH_SHORT).show()
+            intent.putExtra("selectedYear", iYear)
+            intent.putExtra("selectedMonth", iMonth)
+            intent.putExtra("selectedDay", iDay)
+            holder.itemView.context.startActivity(intent)
         }
+
+
     }
 
     override fun getItemCount(): Int {

@@ -18,20 +18,24 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/todaydate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:layout_marginLeft="10dp"/>
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="btn1"/>
+            android:layout_marginTop="17dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/arrow_right_thin"/>
         <Button
             android:id="@+id/choosedate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="btn2"/>
+            android:layout_weight="2"
+            android:layout_marginRight="10dp"/>
     </LinearLayout>
 
     <EditText
@@ -49,6 +53,31 @@
         android:drawableStart="@drawable/alarm"
         android:textSize="30sp"
         android:hint="알림"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/airplane_takeoff"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/filmstrip"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:drawableLeft="@drawable/book"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

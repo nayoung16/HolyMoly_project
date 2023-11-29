@@ -1,6 +1,5 @@
-package com.example.holymoly
+package com.example.holymoly.ui.tab
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

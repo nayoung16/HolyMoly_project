@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.holymoly.HolidayOfMonthAdapter
 import com.example.holymoly.HolyDay
 import com.example.holymoly.databinding.FragmentHomeBinding
 
@@ -43,6 +43,14 @@ class HomeFragment : Fragment() {
         val datas : List<List<String>> = holy.HolyListOfMonth()
         binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(datas)
         binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(activity)
+
+        //각 달의 공휴일 수
+        val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
+            "Aug","Sep","Oct","Nov","Dec")
+        val datas_each_month_holidays = mutableListOf<String>("1","2","3","4","5","6","7","8","9","10","11","12")
+        binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
+        binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
+
         return binding.root
     }
 
