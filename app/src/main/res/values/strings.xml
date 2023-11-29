@@ -30,4 +30,29 @@
 
     <string name="holidays_this_month">이 달의 공휴일</string>
     <string name="holidays_each_month">월별 공휴일 수</string>
+
+    <string name="md_travel">답답한 곳에서 떠나,\n새로운 경험을 만들어 봐요!</string>
+    <string name="md_travel_1">추울 땐 따뜻한 나라로!\n1월 여행지</string>
+    <string name="md_travel_2">겨울을 제대로 즐기고 싶다면?\n2월 여행지</string>
+    <string name="md_travel_3">날씨가 풀릴 땐,\n3월 여행지</string>
+    <string name="md_travel_4">가까운 나라로 잠시 힐링,\n4월 여행지</string>
+    <string name="md_travel_5">가족들과 함께 떠나요~\n5월 여행지</string>
+    <string name="md_travel_6">아름다운 날씨에는?\n6월 여행지</string>
+    <string name="md_travel_7">더워지기 전에 꼭 다녀와야 할\n7월 여행지</string>
+    <string name="md_travel_8">선선한 곳을 찾아!\n8월 여행지</string>
+    <string name="md_travel_9">새로운 도전을 해봐요\n9월 여행지</string>
+    <string name="md_travel_10">감성적인 나라로 떠나요\n10월 여행지</string>
+    <string name="md_travel_11">가을의 끝\n11월 여행지</string>
+    <string name="md_travel_12">겨울에 특별함을 느끼고 싶다면?\n12월 여행지</string>
+    <string name="md_home">집콬 하고 싶을 땐?</string>
+    <string name="md_hobby">#힐링#취미#성장</string>
+    <string name="md_hobby_1">#서핑</string>
+    <string name="md_hobby_2">#캠핑</string>
+    <string name="md_hobby_3">#클라이밍</string>
+    <string name="md_hobby_4">#요리</string>
+    <string name="md_hobby_5">#DIY</string>
+    <string name="md_hobby_6">#그림</string>
+    <string name="md_hobby_7">#음악</string>
+    <string name="md_hobby_8">#퍼즐</string>
+    <string name="md_hobby_9">#요가</string>
 </resources>
