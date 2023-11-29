@@ -2,9 +2,7 @@ package com.example.holymoly
 
 import android.os.Build
 import android.util.Log
-import android.webkit.ValueCallback
 import androidx.annotation.RequiresApi
-import com.example.holymoly.NetworkThread3.Companion.convertToInt
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -12,7 +10,6 @@ import org.w3c.dom.NodeList
 import java.time.LocalDate
 import java.util.concurrent.CountDownLatch
 import javax.xml.parsers.DocumentBuilderFactory
-
 interface HolyCallback {
     fun onValueReady(values: AllHolyData)
 }
@@ -25,7 +22,7 @@ class HolyDay(val sol_year : String) : HolyCallback {
     private val latch = CountDownLatch(1) // 스레드가 완료되기 전까지 대기 시간
 
     init{
-        key = "f%2Fu%2Bs0YkJF139Kb6pvoySE7KYfgNQJwcVZNFUv%2BpTiOc%2FNODm7yH%2Bh4jAhDft5JkkY2Ca%2FT80gbOetgqn4U0SQ%3D%3D"
+        key = "UB2wyCt540HLI8xs6sRFHxNsmxt%2B9prfZVWWWl%2BGRA%2BQoVRTwFNrlQ7EBVt3uJgLFCu8NdWbA03n1o9z3ILEaA%3D%3D"
         url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo?solYear="+sol_year+"&numOfRows="+50+"&ServiceKey="+key
 
         //쓰레드 생성
@@ -42,9 +39,18 @@ class HolyDay(val sol_year : String) : HolyCallback {
         latch.countDown()
     }
 
+    //해당 년도의 총 공휴일 수 반환 함수 for 다음 년도
+    fun totalHolyOfYear() : Int{
+        return allData.totalYear
+    }
     //남은 공휴일 수 반환 함수
     fun restHolyOfYear() : Int {
         return allData.restHolyDayYear
+    }
+
+    //다음 년도의 월별 전체 공휴일 수 반환
+    fun totalHolyOfMonth() : List<Int> {
+        return allData.totalMonth
     }
 
     //달 마다 남은 공휴일 수 반환
@@ -53,11 +59,28 @@ class HolyDay(val sol_year : String) : HolyCallback {
         val month = LocalDate.now().monthValue
         var monthList = mutableListOf<Int>(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         monthList[month] = allData.restHolyDayMonth
-        for (i in (month + 1)..13) {
+        for (i in (month + 1)..12) {
             monthList[i] = allData.totalMonth[i]
         }
 
         return monthList
+    }
+
+    //다음 년도의 첫 공휴일
+    fun FirstHolyListOfMonth() : List<List<String>>{
+        var month : Int = 1
+        var holyList = mutableListOf<List<String>>()
+
+        while(allData.totalMonth[month]==0) { month++ }
+
+        for (name in allData.holyDayYear[month]!!){
+            var dateList = mutableListOf<String>()
+            dateList.add(name)
+            dateList.add(allData.holyDayInform[name]?.start_date?:"")
+            dateList.add(allData.holyDayInform[name]?.end_date?:"")
+            holyList.add(dateList)
+        }
+        return holyList
     }
 
     //이 달의 공휴일
@@ -65,24 +88,24 @@ class HolyDay(val sol_year : String) : HolyCallback {
     fun HolyListOfMonth() : List<List<String>>{
         var holyList = mutableListOf<List<String>>()
         val month = 12
-        val day = LocalDate.now().dayOfMonth
+        val day = 20
 
         if(allData.holyDayYear.containsKey(month)){
-        for (name in allData.holyDayYear[month]!!){
-            val fullStart = allData.holyDayInform[name]?.start_date
-            val fullEnd = allData.holyDayInform[name]?.end_date?:""
-            val start = fullStart?.let { NetworkThread3.convertToInt(it.substring(6)) }
-            if (start != null) {
-                if(day <= start)
-                {
-                    var dateList = mutableListOf<String>()
-                    dateList.add(name)
-                    dateList.add(fullStart)
-                    dateList.add(fullEnd)
-                    holyList.add(dateList)
+            for (name in allData.holyDayYear[month]!!){
+                val fullStart = allData.holyDayInform[name]?.start_date
+                val fullEnd = allData.holyDayInform[name]?.end_date?:""
+                val start = fullStart?.let { NetworkThread3.convertToInt(it.substring(6)) }
+                if (start != null) {
+                    if(day <= start)
+                    {
+                        var dateList = mutableListOf<String>()
+                        dateList.add(name)
+                        dateList.add(fullStart)
+                        dateList.add(fullEnd)
+                        holyList.add(dateList)
+                    }
                 }
-            }
-        }}
+            }}
         Log.d("Success", holyList.toString())
         return holyList
     }
@@ -223,7 +246,7 @@ class NetworkThread3 (private val url: String, private val callback: HolyCallbac
     @RequiresApi(Build.VERSION_CODES.O)
     private fun goneOfHoly():Int{
         val localDate = LocalDate.now()
-        val month = localDate.monthValue
+        val month = LocalDate.now().monthValue
         val day = localDate.dayOfMonth
         var rest = 0
         restOfMonth = totalMonth[month]
