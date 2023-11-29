@@ -2,7 +2,6 @@ package com.example.holymoly.ui.tab
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +9,9 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.holymoly.HolyCallback
 import com.example.holymoly.HolyDay
 import com.example.holymoly.databinding.FragmentHomeBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.concurrent.CountDownLatch
-
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -53,8 +47,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             "Aug","Sep","Oct","Nov","Dec")
 
         val holy2  = HolyDay(binding.solyearSpinner.selectedItem.toString())
-        var datas_each_month_holidays = holy2.restHolyOfMonth()
-        Log.d("ny",datas_each_month_holidays.toString())
+        var datas_each_month_holidays = mutableListOf<Int>(1,1,1,1,1,1,1,1,1,1,1,1,1)
 
         binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
         binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
@@ -84,7 +77,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
 
         if(year == currentYear.toString()) { //올해일 경우
             //올해 남은 공휴일 수
-            binding.restOfYear.text = holy.restHolyOfYear().toString() + "일"
+            binding.restOfYear.text = holy.restHolyOfYear().toString()
             //이 달의 공휴일
             binding.holydaysOfMonthText.text = "이 달의 공휴일"
             holidayDatas = holy.HolyListOfMonth() }

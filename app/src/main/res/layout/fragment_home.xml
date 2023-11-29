@@ -34,6 +34,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/ibmplexsanskr_bold"
                 android:text="년 남은 공휴일 수"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -47,7 +48,7 @@
             android:gravity="center">
             <TextView
                 android:id="@+id/rest_of_year"
-                android:textSize = "50sp"
+                android:textSize = "60sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -56,6 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
+            android:fontFamily="@font/ibmplexsanskr_semibold"
             android:text="days"
             android:textSize="40sp"
             />
