@@ -17,35 +17,37 @@
         android:orientation="vertical"
         android:background="@drawable/main_restholiday_view"
         android:gravity="center"
-        android:layout_weight="1">
+        android:layout_weight="2">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginVertical="5dp">
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/solyear"
-                android:layout_width="50dp"
+            android:layout_marginVertical="10dp">
+            <Spinner
+                android:id="@+id/solyearSpinner"
+                android:background="@drawable/main_solyear_background"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                 android:gravity="center"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="년 남은 공휴일 수"
-                android:textSize="20sp"
-                android:fontFamily="@font/ibmplexsanskr_semibold"
+                android:textSize="30sp"
+                android:textStyle="bold"
                 />
         </LinearLayout>
         <LinearLayout
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:background="@drawable/main_holidays_circle"
-            android:layout_marginVertical="5dp"
+            android:layout_marginVertical="10dp"
             android:gravity="center">
             <TextView
                 android:id="@+id/rest_of_year"
-                android:textSize = "60sp"
+                android:textSize = "50sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -54,27 +56,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
-            android:fontFamily="@font/ibmplexsanskr_bold"
             android:text="days"
-            android:textSize="30sp"
+            android:textSize="40sp"
             />
-
     </LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="30dp"
             android:layout_weight="1"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:orientation="vertical"
-                tools:ignore="Suspicious0dp">
+                android:orientation="vertical">
                 <TextView
                     android:textSize = "20sp"
-                    android:text="@string/holidays_this_month"
+                    android:id="@+id/holydaysOfMonthText"
                     android:fontFamily="@font/ibmplexsanskr_regular"
                     android:layout_marginVertical="20dp"
                     android:layout_width="match_parent"
@@ -91,8 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:orientation="vertical"
-                tools:ignore="Suspicious0dp">
+                android:orientation="vertical">
                 <TextView
                     android:textSize = "20sp"
                     android:text="@string/holidays_each_month"
