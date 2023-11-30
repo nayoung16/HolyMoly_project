@@ -1,6 +1,7 @@
 package com.example.holymoly.ui.tab
 
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Color.parseColor
 import android.graphics.Typeface
@@ -12,8 +13,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.holymoly.AddActivity
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
 import com.google.android.material.floatingactionbutton.FloatingActionButton.Size
@@ -48,24 +52,46 @@ class CalendarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val today = CalendarDay.today()
 
-        val disabledDates = hashSetOf<CalendarDay>()
-
-        binding.calendarview.apply{
+        binding.calendarview.apply {
             // 요일 지정
             setWeekDayLabels(arrayOf("MON", "TUE", "WEN", "THU", "FRI", "SAT", "SUN"))
             // 달력 상단에 '월 년'
             setTitleFormatter(MonthArrayTitleFormatter(resources.getTextArray(R.array.custom_months)))
             setHeaderTextAppearance(R.style.CalendarTitle)
+            setPadding(0, -20, 0, 30)
+            isDynamicHeightEnabled = true
         }
         binding.calendarview.setSelectedDate(CalendarDay.today())
 
         binding.calendarview.addDecorators(
-            TodayDecorator(), SatDecorator(), SunDecorator()
+            TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month)
         )
-    }
 
+        binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
+            // 초기화
+            binding.calendarview.removeDecorators()
+            binding.calendarview.invalidateDecorators()
+
+            binding.calendarview.addDecorators(
+                TodayDecorator(),
+                SatDecorator(),
+                SunDecorator(),
+                OtherMonth(date.month)
+            )
+        }
+        binding.calendarview.setOnDateChangedListener { widget, date, selected ->
+            val year = date.year
+            val month = date.month
+            val day = date.day
+
+            val intent = Intent(context, AddActivity::class.java)
+            intent.putExtra("selectedYear", year)
+            intent.putExtra("selectedMonth", month)
+            intent.putExtra("selectedDay", day)
+            startActivity(intent)
+        }
+    }
 
     class TodayDecorator : DayViewDecorator {
         val date = CalendarDay.today()
@@ -81,7 +107,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    class SatDecorator: DayViewDecorator {
+    class SatDecorator : DayViewDecorator {
         override fun shouldDecorate(day: CalendarDay?): Boolean {
             return day?.day?.let { dayOfMonth ->
                 val calendar = Calendar.getInstance().apply {
@@ -93,12 +119,13 @@ class CalendarFragment : Fragment() {
                 weekDay == Calendar.SATURDAY
             } ?: false
         }
+
         override fun decorate(view: DayViewFacade?) {
             view?.addSpan(ForegroundColorSpan(Color.BLUE))
         }
     }
 
-    class SunDecorator: DayViewDecorator {
+    class SunDecorator : DayViewDecorator {
         override fun shouldDecorate(day: CalendarDay?): Boolean {
             return day?.day?.let { dayOfMonth ->
                 val calendar = Calendar.getInstance().apply {
@@ -110,15 +137,20 @@ class CalendarFragment : Fragment() {
                 weekDay == Calendar.SUNDAY
             } ?: false
         }
+
         override fun decorate(view: DayViewFacade?) {
             view?.addSpan(ForegroundColorSpan(Color.RED))
         }
     }
 
-    fun setSchedules(){
-        val usAdapter = UpcomingSchedulesAdapter(itemList)
-        binding.upcomingSchedules.adapter = usAdapter
-        binding.upcomingSchedules.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-    }
+    class OtherMonth(val selectedMonth: Int) : DayViewDecorator {
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return day?.month != selectedMonth
+        }
 
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(ForegroundColorSpan(Color.GRAY))
+        }
+    }
 }
+
