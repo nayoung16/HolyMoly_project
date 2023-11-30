@@ -18,8 +18,6 @@ import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentMyHolidaysBinding
 import com.example.holymoly.databinding.ItemMyHolidaysBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
 class MyViewHolder(val binding: ItemMyHolidaysBinding) : RecyclerView.ViewHolder(binding.root)
@@ -94,20 +92,12 @@ class MyHolidaysFragment : Fragment() {
     ): View? {
         val binding = FragmentMyHolidaysBinding.inflate(inflater, container, false)
 
-        // FirebaseAuth 인스턴스 가져오기
-        val auth = Firebase.auth
-
-        // 현재 로그인된 사용자 가져오기
-        val currentUser = auth.currentUser
-
-        // 현재 로그인된 사용자의 이메일 가져오기
-        val userEmail = currentUser?.email
 
 
         lifecycleScope.launch {
 
             try {
-                val holidayList = firestoreHelper.getAllHolidaysFromFirestore(userEmail!!)
+                val holidayList = firestoreHelper.getAllHolidaysFromFirestore()
 
                 // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
                 // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
