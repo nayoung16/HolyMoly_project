@@ -62,18 +62,21 @@
         android:layout_height="300dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/flight"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/airplane_takeoff"/>
         <Button
+            android:id="@+id/movie"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
             android:drawableLeft="@drawable/filmstrip"/>
         <Button
+            android:id="@+id/book"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
