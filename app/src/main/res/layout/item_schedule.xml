@@ -11,9 +11,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@drawable/rounded_box_my_holidays">
         <ImageView
-            android:id="@+id/item_image"
+            android:id="@+id/itemImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentStart="true"
@@ -23,19 +24,23 @@
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_launcher_foreground"/>
         <TextView
-            android:id="@+id/title_recycler"
+            android:id="@+id/titleRecycler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/item_image"
-            android:layout_toRightOf="@+id/item_image"
+            android:textSize="25sp"
+            android:fontFamily="@font/ibmplexsanskr_bold"
+            android:layout_toEndOf="@+id/itemImage"
+            android:layout_toRightOf="@+id/itemImage"
             android:layout_alignParentTop="true"/>
         <TextView
-            android:id="@+id/date_recycler"
+            android:id="@+id/dateRecycler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/item_image"
-            android:layout_toRightOf="@+id/item_image"
-            android:layout_below="@+id/title_recycler"/>
+            android:textSize="20sp"
+            android:fontFamily="@font/ibmplexsanskr_regular"
+            android:layout_toEndOf="@+id/itemImage"
+            android:layout_toRightOf="@+id/itemImage"
+            android:layout_below="@+id/titleRecycler"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

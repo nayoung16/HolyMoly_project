@@ -3,7 +3,6 @@ package com.example.holymoly.ui.tab
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Color.parseColor
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
@@ -13,27 +12,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton.Size
+import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
-import com.prolificinteractive.materialcalendarview.format.DateFormatTitleFormatter
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
-import com.prolificinteractive.materialcalendarview.format.TitleFormatter
-import java.text.SimpleDateFormat
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.util.Calendar
-import java.util.Locale
 
 class CalendarFragment : Fragment() {
     lateinit var binding: FragmentCalendarBinding
-    val itemList = ArrayList<ScheduleItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,10 +34,20 @@ class CalendarFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // 선택된 달 값 받아오기
+        val selectedMonthIndex = arguments?.getInt("selectedMonthIndex", 0) ?: 0
         // binding 초기화
         binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.MONTH, selectedMonthIndex) // 선택된 달로 이동
+            set(Calendar.DAY_OF_MONTH, 1) // 해당 월의 첫 번째 날로 설정
+        }
 
+        //val selectedCalendarDay = CalendarDay.from(calendar)
+
+        //val materialCalendarView = binding.calendarview
+        //materialCalendarView.setCurrentDate(selectedCalendarDay)
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -67,6 +69,16 @@ class CalendarFragment : Fragment() {
         binding.calendarview.addDecorators(
             TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month)
         )
+
+        val titles = listOf("Title 1", "Title 2", "Title 3") // 예시 데이터
+        val details = listOf("Detail 1", "Detail 2", "Detail 3") // 예시 데이터
+        val images = listOf(R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground) // 예시 데이터
+
+        val adapter = UpcomingSchedulesAdapter(titles, details, images) // 어댑터 생성 및 데이터 전달
+
+        binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
+        binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
+
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
             // 초기화
@@ -90,6 +102,47 @@ class CalendarFragment : Fragment() {
             intent.putExtra("selectedMonth", month)
             intent.putExtra("selectedDay", day)
             startActivity(intent)
+
+        }
+
+        // Firestore 초기화
+        var firestore = FirebaseFirestore.getInstance()
+
+        // Firestore에서 일정 데이터 가져오기
+        /*firestore.collection("events")
+            .get()
+            .addOnSuccessListener { documents ->
+                val eventDates = HashSet<CalendarDay>()
+                for (document in documents) {
+                    val eventDate = document.getString("date")
+
+                    eventDate?.let {
+                        val year = it[0].toInt()
+                        val month = it[1].toInt() - 1
+                        val day = it[2].toInt()
+                        val calendarDay = CalendarDay.from(year, month, day)
+                        eventDates.add(calendarDay)
+                        binding.calendarview.addDecorator(
+                            EventDecorator(
+                                Color.parseColor("#0E406B"),
+                                Collections.singleton(CalendarDay.from(year, month - 1, day))
+                            )
+                        )
+                    }
+                }
+            }*/
+
+    }
+
+    class EventDecorator(dates: Collection<CalendarDay>): DayViewDecorator {    // 일정이 있으면 점 찍기
+        var dates: HashSet<CalendarDay> = HashSet(dates)
+
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return dates.contains(day)
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(DotSpan(5F, Color.parseColor("#1D872A")))
         }
     }
 
@@ -97,7 +150,6 @@ class CalendarFragment : Fragment() {
         val date = CalendarDay.today()
 
         override fun shouldDecorate(day: CalendarDay?): Boolean {
-            // 휴무일 || 이전 날짜
             return day == date
         }
 
