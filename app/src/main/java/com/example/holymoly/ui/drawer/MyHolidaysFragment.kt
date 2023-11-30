@@ -1,14 +1,17 @@
 package com.example.holymoly.ui.drawer
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.FirestoreHelper
@@ -17,11 +20,14 @@ import com.example.holymoly.databinding.FragmentMyHolidaysBinding
 import com.example.holymoly.databinding.ItemMyHolidaysBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class MyViewHolder(val binding: ItemMyHolidaysBinding) : RecyclerView.ViewHolder(binding.root)
 
-class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holidays_start_date: MutableList<String>,
-    val datas_holidays_end_date: MutableList<String>, val datas_categories: MutableList<String>)
+class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holidays_start_year: MutableList<String>,
+                val datas_holidays_start_month: MutableList<String>,val datas_holidays_start_date: MutableList<String>,
+                val datas_holidays_end_year: MutableList<String>, val datas_holidays_end_month: MutableList<String>,
+                val datas_holidays_end_date: MutableList<String>, val datas_categories: MutableList<String>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int {
         return datas_holidays_title.size
@@ -32,10 +38,25 @@ class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holiday
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyViewHolder).binding
-        binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+        when (datas_categories[position]) {
+            "0" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_people)
+            "1" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_airplane_takeoff)
+            "2" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_book)
+            "3" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+        }
+
         binding.itemDataHolidays.text=datas_holidays_title[position]
-        binding.itemDataHolidaysStartDate.text = datas_holidays_start_date[position]
-        binding.itemDataHolidaysEndDate.text = datas_holidays_end_date[position]
+        if ( datas_holidays_start_year[position] == datas_holidays_end_year[position]
+            && datas_holidays_start_month[position] == datas_holidays_end_month[position]
+            && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysEndDate.text = " "
+        }
+        else {
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysEndDate.text = " ~ " + datas_holidays_end_month[position] + "월" + datas_holidays_end_date[position] + "일"
+        }
+
     }
 }
 
@@ -83,19 +104,57 @@ class MyHolidaysFragment : Fragment() {
         val userEmail = currentUser?.email
 
 
+        lifecycleScope.launch {
 
-        val datas_holidays_title = mutableListOf<String>("세부 여행","일정2","일정3")
-        val datas_holidays_start_date = mutableListOf<String>("12월 24일","12월 24일","12월 24일")
-        val datas_holidays_end_date = mutableListOf<String>("12월 24일","12월 24일","12월 24일")
-        val datas_categories = mutableListOf<String>("movie","book","flght")
+            try {
+                val holidayList = firestoreHelper.getAllHolidaysFromFirestore(userEmail!!)
+
+                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+                Log.d("ny", "Received holidayList: $holidayList")
+
+                val datas_holidays_title = mutableListOf<String>()
+                val datas_holidays_start_year = mutableListOf<String>()
+                val datas_holidays_start_month = mutableListOf<String>()
+                val datas_holidays_start_date = mutableListOf<String>()
+                val datas_holidays_end_year = mutableListOf<String>()
+                val datas_holidays_end_month = mutableListOf<String>()
+                val datas_holidays_end_date = mutableListOf<String>()
+                val datas_categories = mutableListOf<String>()
+
+                for (holiday in holidayList) {
+                    datas_holidays_title.add(holiday["holiday_title"].toString())
+                    datas_holidays_start_year.add(holiday["start_year"].toString())
+                    datas_holidays_start_month.add(holiday["start_month"].toString())
+                    datas_holidays_start_date.add(holiday["start_date"].toString())
+                    datas_holidays_end_year.add(holiday["end_year"].toString())
+                    datas_holidays_end_month.add(holiday["end_month"].toString())
+                    datas_holidays_end_date.add(holiday["end_date"].toString())
+                    datas_categories.add(holiday["category"].toString())
+                }
+
+                val adapter = MyAdapter(datas_holidays_title, datas_holidays_start_year, datas_holidays_start_month,
+                    datas_holidays_start_date, datas_holidays_end_year, datas_holidays_end_month,
+                    datas_holidays_end_date ,datas_categories)
+
+                val layoutManager = LinearLayoutManager(activity)
+                binding.myHolidaysRecyclerView.layoutManager = layoutManager
+
+                binding.myHolidaysRecyclerView.adapter = adapter
+                binding.myHolidaysRecyclerView.addItemDecoration(MyDecoration(activity as Context))
 
 
-        val layoutManager = LinearLayoutManager(activity)
-        binding.myHolidaysRecyclerView.layoutManager = layoutManager
-        val adapter = MyAdapter(datas_holidays_title, datas_holidays_start_date,
-            datas_holidays_end_date,datas_categories)
-        binding.myHolidaysRecyclerView.adapter = adapter
-        binding.myHolidaysRecyclerView.addItemDecoration(MyDecoration(activity as Context))
+            } catch (e: Exception) {
+                // 예외 처리
+                Log.e(TAG, "Error fetching holidays: $e")
+            }
+
+        }
+
+
+
+
+
         return binding.root
     }
 

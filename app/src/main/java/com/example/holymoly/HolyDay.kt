@@ -87,8 +87,9 @@ class HolyDay(val sol_year : String) : HolyCallback {
     @RequiresApi(Build.VERSION_CODES.O)
     fun HolyListOfMonth() : List<List<String>>{
         var holyList = mutableListOf<List<String>>()
-        val month = 12
-        val day = 20
+        val now = LocalDate.now()
+        val month = now.monthValue
+        val day = now.dayOfMonth
 
         if(allData.holyDayYear.containsKey(month)){
             for (name in allData.holyDayYear[month]!!){
