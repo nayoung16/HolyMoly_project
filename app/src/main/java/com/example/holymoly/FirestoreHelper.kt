@@ -1,7 +1,6 @@
 package com.example.holymoly
 
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -10,14 +9,9 @@ import kotlinx.coroutines.withContext
 
 class FirestoreHelper {
     private val db = Firebase.firestore
-    val auth = Firebase.auth
-
-    // 현재 로그인된 사용자 가져오기
-    val currentUser = auth.currentUser
-
-    // 현재 로그인된 사용자의 이메일 가져오기
-    val userEmail = currentUser?.email
-
+    //firestore에서 이메일 가져오기
+    val authHelper = AuthHelper()
+    val userEmail = authHelper.getCurrentUserEmail()
     fun addUserToFirestore(email: String) {
 
         val data = hashMapOf("user_email" to email)
@@ -54,8 +48,7 @@ class FirestoreHelper {
 
     }
 
-    suspend fun getEachDayHolidaysFromFirestore(new_start_year: Int, new_start_month: Int, new_start_date: Int,
-                                                new_end_year: Int, new_end_month: Int, new_end_date: Int): List<Map<String, Int>> {
+    suspend fun getEachMonthHolidaysFromFirestore(this_year:Int, this_month:Int): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             val holidayList = mutableListOf<Map<String, Int>>()
 
@@ -63,19 +56,20 @@ class FirestoreHelper {
                 val documents = db.collection("user")
                     .document(userEmail!!)
                     .collection("holiday")
-                    .whereEqualTo("start_year", new_start_year)
-                    .whereGreaterThanOrEqualTo("start_month", new_start_month)
-                    .whereLessThanOrEqualTo("end_month", new_end_month)
-                    .whereGreaterThanOrEqualTo("start_date", new_start_date)
-                    .whereLessThanOrEqualTo("end_date", new_end_date)
+                    .whereLessThanOrEqualTo("start_year", this_year)
+                    .whereGreaterThanOrEqualTo("end_year", this_year)
+                    .whereLessThanOrEqualTo("start_month", this_month)
+                    .whereGreaterThanOrEqualTo("end_month", this_month)
                     .get()
                     .await()
+
+                val holidayList = mutableListOf<Map<String, Any>>()
 
                 for (document in documents) {
                     // 각 문서에 대한 처리
                     val data = document.data
                     // data를 사용하여 필요한 작업 수행
-                    holidayList.add(data as Map<String, Int>)
+                    holidayList.add(data)
                 }
             } catch (exception: Exception) {
                 // 쿼리 실패 시 처리
@@ -85,11 +79,11 @@ class FirestoreHelper {
             return@withContext holidayList
         }
     }
-    suspend fun getAllHolidaysFromFirestore(email: String): List<Map<String, Any>> {
+    suspend fun getAllHolidaysFromFirestore(): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 val documents = db.collection("user")
-                    .document(email)
+                    .document(userEmail!!)
                     .collection("holiday")
                     .get()
                     .await()
