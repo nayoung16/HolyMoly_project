@@ -14,6 +14,8 @@ import java.util.Date
 
 class AddActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddBinding
+    //firestore
+    private val firestoreHelper = FirestoreHelper()
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,6 +133,7 @@ class AddActivity : AppCompatActivity() {
             // 비행기, 영화, 책 중 택1
             var cate = flag
 
+            firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
 
             finish()
         }

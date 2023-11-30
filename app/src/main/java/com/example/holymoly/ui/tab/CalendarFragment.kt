@@ -1,6 +1,5 @@
 package com.example.holymoly.ui.tab
 
-
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface

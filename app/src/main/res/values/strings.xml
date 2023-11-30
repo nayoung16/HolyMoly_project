@@ -52,6 +52,9 @@
     </string-array>
     <string name="days">days</string>
 
+    <string name="bucket_tab1">버킷리스트</string>
+    <string name="bucket_tab2">완료</string>
+
     <string name="md_travel">답답한 곳에서 떠나,\n새로운 경험을 만들어 봐요!</string>
     <string name="md_travel_1">추울 땐 따뜻한 나라로!\n1월 여행지</string>
     <string name="md_travel_2">겨울을 제대로 즐기고 싶다면?\n2월 여행지</string>
