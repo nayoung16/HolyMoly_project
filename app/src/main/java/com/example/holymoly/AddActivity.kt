@@ -1,16 +1,12 @@
 package com.example.holymoly
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.holymoly.databinding.ActivityAddBinding
-import com.example.holymoly.ui.tab.CalendarAdapter
-import com.example.holymoly.ui.tab.CalendarFragment
-import com.example.holymoly.ui.tab.CalendarUtil
+import com.example.holymoly.ui.tab.ScheduleItem
 import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
@@ -18,6 +14,7 @@ import java.util.Date
 
 class AddActivity : AppCompatActivity() {
     lateinit var binding: ActivityAddBinding
+    val itemList = ArrayList<ScheduleItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
@@ -72,7 +69,15 @@ class AddActivity : AppCompatActivity() {
             finish()
         }
         binding.save.setOnClickListener(){  // 저장 클릭 시 캘린더에 표시
+            // 일정 제목
+            val title = binding.title1.text.toString()
+            // 시작 날
+            val date1 = binding.todaydate.text.toString()
+            // 끝나는 날
+            val date2 = binding.choosedate.text.toString()
 
+
+            finish()
         }
     }
 }
