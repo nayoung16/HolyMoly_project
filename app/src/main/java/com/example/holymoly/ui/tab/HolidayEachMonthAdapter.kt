@@ -8,7 +8,7 @@ import com.example.holymoly.databinding.MainEachMonthHolidaysviewBinding
 class MyViewHolder2(val binding: MainEachMonthHolidaysviewBinding)
     : RecyclerView.ViewHolder(binding.root)
 
-class HolidayEachMonthAdapter(val datas_each_month : List<String>, val datas_each_month_holidays : List<String>)
+class HolidayEachMonthAdapter(val datas_each_month : List<String>, val datas_each_month_holidays : List<Int>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     override fun getItemCount(): Int = datas_each_month.size
@@ -16,7 +16,7 @@ class HolidayEachMonthAdapter(val datas_each_month : List<String>, val datas_eac
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyViewHolder2).binding
         binding.eachMonth.text = datas_each_month[position]
-        binding.eachMonthHolidays.text = datas_each_month_holidays[position]
+        binding.eachMonthHolidays.text = datas_each_month_holidays[position+1].toString()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

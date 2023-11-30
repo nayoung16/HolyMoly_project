@@ -30,12 +30,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
 
@@ -48,12 +48,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var googleSignInClient : GoogleSignInClient
 
 
+    //firestore
+    private val firestoreHelper = FirestoreHelper()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //firestore initialize
+        FirebaseApp.initializeApp(this)
+
+        firestoreHelper.addUserToFirestore("email", "nickName")
 
         if (savedInstanceState != null) {
             selectedPage = savedInstanceState.getInt(KEY_SELECTED_PAGE, 0)
