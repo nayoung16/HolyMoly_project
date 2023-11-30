@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="3dp"
+    app:contentPadding="4dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/rounded_box_my_holidays">
+        <ImageView
+            android:id="@+id/itemImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:src="@drawable/ic_launcher_foreground"/>
+        <TextView
+            android:id="@+id/titleRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:fontFamily="@font/ibmplexsanskr_bold"
+            android:layout_toEndOf="@+id/itemImage"
+            android:layout_toRightOf="@+id/itemImage"
+            android:layout_alignParentTop="true"/>
+        <TextView
+            android:id="@+id/dateRecycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:fontFamily="@font/ibmplexsanskr_regular"
+            android:layout_toEndOf="@+id/itemImage"
+            android:layout_toRightOf="@+id/itemImage"
+            android:layout_below="@+id/titleRecycler"/>
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

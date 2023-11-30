@@ -1,8 +1,8 @@
 package com.example.holymoly.ui.drawer
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -11,27 +11,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentMyHolidaysBinding
 import com.example.holymoly.databinding.ItemMyHolidaysBinding
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-/**
- * A simple [Fragment] subclass.
- * Use the [MyHolidaysFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class MyViewHolder(val binding: ItemMyHolidaysBinding) : RecyclerView.ViewHolder(binding.root)
 
-class MyAdapter(val datas: MutableList<String>, val datas2: MutableList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holidays_start_year: MutableList<String>,
+                val datas_holidays_start_month: MutableList<String>,val datas_holidays_start_date: MutableList<String>,
+                val datas_holidays_end_year: MutableList<String>, val datas_holidays_end_month: MutableList<String>,
+                val datas_holidays_end_date: MutableList<String>, val datas_categories: MutableList<String>)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemCount(): Int {
-        return datas.size
+        return datas_holidays_title.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -39,9 +38,25 @@ class MyAdapter(val datas: MutableList<String>, val datas2: MutableList<String>)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyViewHolder).binding
-        binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
-        binding.itemDataHolidays.text=datas[position]
-        binding.itemDataHolidaysSchedule.text = datas2[position]
+        when (datas_categories[position]) {
+            "0" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_people)
+            "1" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_airplane_takeoff)
+            "2" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_book)
+            "3" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+        }
+
+        binding.itemDataHolidays.text=datas_holidays_title[position]
+        if ( datas_holidays_start_year[position] == datas_holidays_end_year[position]
+            && datas_holidays_start_month[position] == datas_holidays_end_month[position]
+            && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysEndDate.text = " "
+        }
+        else {
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysEndDate.text = " ~ " + datas_holidays_end_month[position] + "월" + datas_holidays_end_date[position] + "일"
+        }
+
     }
 }
 
@@ -66,6 +81,8 @@ class MyDecoration(val context: Context): RecyclerView.ItemDecoration() {
     }
 }
 class MyHolidaysFragment : Fragment() {
+    //firestore
+    private val firestoreHelper = FirestoreHelper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,14 +94,67 @@ class MyHolidaysFragment : Fragment() {
     ): View? {
         val binding = FragmentMyHolidaysBinding.inflate(inflater, container, false)
 
-        val datas_holidays = mutableListOf<String>("세부 여행","일정2","일정3")
-        val datas_holidays_schedule = mutableListOf<String>("12월 24일 - 12월 28일","12월 24일 - 1월 3일","12월 24일 - 12월 28일")
+        // FirebaseAuth 인스턴스 가져오기
+        val auth = Firebase.auth
 
-        val layoutManager = LinearLayoutManager(activity)
-        binding.myHolidaysRecyclerView.layoutManager = layoutManager
-        val adapter = MyAdapter(datas_holidays, datas_holidays_schedule)
-        binding.myHolidaysRecyclerView.adapter = adapter
-        binding.myHolidaysRecyclerView.addItemDecoration(MyDecoration(activity as Context))
+        // 현재 로그인된 사용자 가져오기
+        val currentUser = auth.currentUser
+
+        // 현재 로그인된 사용자의 이메일 가져오기
+        val userEmail = currentUser?.email
+
+
+        lifecycleScope.launch {
+
+            try {
+                val holidayList = firestoreHelper.getAllHolidaysFromFirestore(userEmail!!)
+
+                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+                Log.d("ny", "Received holidayList: $holidayList")
+
+                val datas_holidays_title = mutableListOf<String>()
+                val datas_holidays_start_year = mutableListOf<String>()
+                val datas_holidays_start_month = mutableListOf<String>()
+                val datas_holidays_start_date = mutableListOf<String>()
+                val datas_holidays_end_year = mutableListOf<String>()
+                val datas_holidays_end_month = mutableListOf<String>()
+                val datas_holidays_end_date = mutableListOf<String>()
+                val datas_categories = mutableListOf<String>()
+
+                for (holiday in holidayList) {
+                    datas_holidays_title.add(holiday["holiday_title"].toString())
+                    datas_holidays_start_year.add(holiday["start_year"].toString())
+                    datas_holidays_start_month.add(holiday["start_month"].toString())
+                    datas_holidays_start_date.add(holiday["start_date"].toString())
+                    datas_holidays_end_year.add(holiday["end_year"].toString())
+                    datas_holidays_end_month.add(holiday["end_month"].toString())
+                    datas_holidays_end_date.add(holiday["end_date"].toString())
+                    datas_categories.add(holiday["category"].toString())
+                }
+
+                val adapter = MyAdapter(datas_holidays_title, datas_holidays_start_year, datas_holidays_start_month,
+                    datas_holidays_start_date, datas_holidays_end_year, datas_holidays_end_month,
+                    datas_holidays_end_date ,datas_categories)
+
+                val layoutManager = LinearLayoutManager(activity)
+                binding.myHolidaysRecyclerView.layoutManager = layoutManager
+
+                binding.myHolidaysRecyclerView.adapter = adapter
+                binding.myHolidaysRecyclerView.addItemDecoration(MyDecoration(activity as Context))
+
+
+            } catch (e: Exception) {
+                // 예외 처리
+                Log.e(TAG, "Error fetching holidays: $e")
+            }
+
+        }
+
+
+
+
+
         return binding.root
     }
 

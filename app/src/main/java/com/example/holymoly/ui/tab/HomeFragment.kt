@@ -16,15 +16,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-/**
- * A simple [Fragment] subclass.
- * Use the [BucketListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeFragment : Fragment() , OnYearItemSelectedListener{
     private lateinit var binding : FragmentHomeBinding
@@ -86,11 +78,20 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 binding.restOfYear.text = holy.totalHolyOfYear().toString() + "일"
                 holidayDatas = holy.FirstHolyListOfMonth()
                 datas_each_month_holidays = holy.totalHolyOfMonth()}
+            
+            var datas: List<List<String>>
 
-            //이달의 공휴일 리사이클러 뷰
-            binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(holidayDatas)
-            binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
-
+            if(holidayDatas.isEmpty()) {
+                datas = listOf(
+                  listOf("Item1")
+                )
+                binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(datas)
+                binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+            } else {
+              //이달의 공휴일 리사이클러 뷰
+                binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(holidayDatas)
+                binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+            }
             //각 달의 공휴일 리사이클러 뷰
             binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
             binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)

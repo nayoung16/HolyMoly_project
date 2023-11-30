@@ -28,8 +28,32 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="welcome">"HOLY MOLY와 함께해 보세요!"</string>
 
+    <string name="rest_holidays_this_year">년 남은 공휴일 수</string>
     <string name="holidays_this_month">이 달의 공휴일</string>
     <string name="holidays_each_month">월별 공휴일 수</string>
+    <string name="title">  제목</string>
+    <string name="location">  장소</string>
+    <string name="alarm">  알림</string>
+    <string name="cancel">취소</string>
+    <string name="save">저장</string>
+    <string-array name="custom_months">
+        <item>1월</item>
+        <item>2월</item>
+        <item>3월</item>
+        <item>4월</item>
+        <item>5월</item>
+        <item>6월</item>
+        <item>7월</item>
+        <item>8월</item>
+        <item>9월</item>
+        <item>10월</item>
+        <item>11월</item>
+        <item>12월</item>
+    </string-array>
+    <string name="days">days</string>
+
+    <string name="bucket_tab1">버킷리스트</string>
+    <string name="bucket_tab2">완료</string>
 
     <string name="md_book_text1">마음 충전\n지식 충전</string>
     <string name="md_book_text2">책 추천!</string>

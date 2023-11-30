@@ -9,12 +9,16 @@
 
     <ImageView
         android:id="@+id/holidays_of_month_img"
+        android:layout_marginStart="5dp"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@android:drawable/stat_notify_chat"/>
 
     <TextView
         android:id="@+id/holidays_of_month_name"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:fontFamily="@font/ibmplexsanskr_regular"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
@@ -22,9 +26,13 @@
 
     <TextView
         android:id="@+id/holidays_of_month_date"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:fontFamily="@font/ibmplexsanskr_regular"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_weight="1.5" />
+        android:layout_weight="1.5"
+        android:gravity="center" />
 
 </LinearLayout>

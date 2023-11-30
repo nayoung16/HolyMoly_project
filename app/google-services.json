@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "769704873956-14t0dfjlvb4dnot4u7g5514ni18av3p8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.holymoly",
+            "certificate_hash": "fb9e5e330ee30626a4f3ee409880a52e3bf12bc5"
+          }
+        },
+        {
           "client_id": "769704873956-ko7qlg6fdmpueb6lkdd11d1meneln2p9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

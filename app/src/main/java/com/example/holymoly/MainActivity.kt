@@ -32,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -50,12 +51,30 @@ class MainActivity : AppCompatActivity() {
     private lateinit var googleSignInClient : GoogleSignInClient
 
 
+    //firestore
+    private val firestoreHelper = FirestoreHelper()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //firestore initialize
+        FirebaseApp.initializeApp(this)
+
+        // FirebaseAuth 인스턴스 가져오기
+        val auth = Firebase.auth
+
+        // 현재 로그인된 사용자 가져오기
+        val currentUser = auth.currentUser
+
+        // 현재 로그인된 사용자의 이메일 가져오기
+        val userEmail = currentUser?.email
+
+        if (userEmail != null) {
+            firestoreHelper.addUserToFirestore(userEmail)
+        }
 
         if (savedInstanceState != null) {
             selectedPage = savedInstanceState.getInt(KEY_SELECTED_PAGE, 0)
@@ -169,8 +188,6 @@ class MainActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // firebaseauth를 사용하기 위한 인스턴스 get
-        auth = FirebaseAuth.getInstance()
 
         val navigationView: NavigationView = findViewById(R.id.nav_view)
 

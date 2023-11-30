@@ -1,106 +1,207 @@
 package com.example.holymoly.ui.tab
 
-import android.os.Build.VERSION_CODES.R
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.holymoly.AddActivity
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
+import com.google.firebase.firestore.FirebaseFirestore
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.DayViewDecorator
+import com.prolificinteractive.materialcalendarview.DayViewFacade
+import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
+import com.prolificinteractive.materialcalendarview.spans.DotSpan
 import java.util.Calendar
-import java.util.Date
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CalendarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     lateinit var binding: FragmentCalendarBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // 선택된 달 값 받아오기
+        val selectedMonthIndex = arguments?.getInt("selectedMonthIndex", 0) ?: 0
         // binding 초기화
         binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
-        // 화면 설정
-        setMonthView()
-
-        binding.preBtn.setOnClickListener{
-            CalendarUtil.selectedDate.add(Calendar.MONTH, -1) // 현재 달 -1
-            setMonthView()
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.MONTH, selectedMonthIndex) // 선택된 달로 이동
+            set(Calendar.DAY_OF_MONTH, 1) // 해당 월의 첫 번째 날로 설정
         }
 
-        binding.nextBtn.setOnClickListener{
-            CalendarUtil.selectedDate.add(Calendar.MONTH, 1) // 현재 달 +1
-            setMonthView()
-        }
+        //val selectedCalendarDay = CalendarDay.from(calendar)
 
-        // 날짜 화면에 보여주기
-
+        //val materialCalendarView = binding.calendarview
+        //materialCalendarView.setCurrentDate(selectedCalendarDay)
         // Inflate the layout for this fragment
         return binding.root
     }
 
-    fun setMonthView() {
-        // 년월 텍스트 뷰 셋팅
-        binding.monthYearText.text = monthYearFromDate(CalendarUtil.selectedDate)
-        // 날짜 생성해서 리스트에 담기
-        val dayList = dayInMonthArray()
-        // 어댑터 초기화
-        val adapter = CalendarAdapter(dayList)
-        // 열 7개 생성
-        var manager: RecyclerView.LayoutManager = GridLayoutManager(requireContext(), 7)
-        // 레이아웃 적용
-        binding. recyclerView.layoutManager = manager
-        // 어뎁터 적용
-        binding.recyclerView.adapter = adapter
-    }
-    // 날짜 타입 설정(월, 년) -> 상단바
-    fun monthYearFromDate(calendar: Calendar): String{
-        var year = calendar.get(Calendar.YEAR)
-        var month = calendar.get(Calendar.MONTH) + 1
-        return "${year}년 ${month}월"
-    }
-    // 날짜 생성
-    fun dayInMonthArray(): ArrayList<Date>{
-        var dayList = ArrayList<Date>()
-        var monthCalendar = CalendarUtil.selectedDate.clone() as Calendar
-        // 1일로 셋팅
-        monthCalendar[Calendar.DAY_OF_MONTH] = 1
-        // 해당 달의 1일의 요일
-        val firstDayOfMonth = monthCalendar[Calendar.DAY_OF_WEEK] - 1
-        // 요일 숫자만큼 이전 날짜로 설정
-        monthCalendar.add(Calendar.DAY_OF_MONTH, -firstDayOfMonth)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        while(dayList.size < 42){
-            dayList.add(monthCalendar.time)
-
-            // 1일씩 늘린다
-            monthCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        binding.calendarview.apply {
+            // 요일 지정
+            setWeekDayLabels(arrayOf("MON", "TUE", "WEN", "THU", "FRI", "SAT", "SUN"))
+            // 달력 상단에 '월 년'
+            setTitleFormatter(MonthArrayTitleFormatter(resources.getTextArray(R.array.custom_months)))
+            setHeaderTextAppearance(R.style.CalendarTitle)
+            setPadding(0, -20, 0, 30)
+            isDynamicHeightEnabled = true
         }
-        return dayList
+        binding.calendarview.setSelectedDate(CalendarDay.today())
+
+        binding.calendarview.addDecorators(
+            TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month)
+        )
+
+        val titles = listOf("Title 1", "Title 2", "Title 3") // 예시 데이터
+        val details = listOf("Detail 1", "Detail 2", "Detail 3") // 예시 데이터
+        val images = listOf(R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_foreground) // 예시 데이터
+
+        val adapter = UpcomingSchedulesAdapter(titles, details, images) // 어댑터 생성 및 데이터 전달
+
+        binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
+        binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
+
+
+        binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
+            // 초기화
+            binding.calendarview.removeDecorators()
+            binding.calendarview.invalidateDecorators()
+
+            binding.calendarview.addDecorators(
+                TodayDecorator(),
+                SatDecorator(),
+                SunDecorator(),
+                OtherMonth(date.month)
+            )
+        }
+        binding.calendarview.setOnDateChangedListener { widget, date, selected ->
+            val year = date.year
+            val month = date.month
+            val day = date.day
+
+            val intent = Intent(context, AddActivity::class.java)
+            intent.putExtra("selectedYear", year)
+            intent.putExtra("selectedMonth", month)
+            intent.putExtra("selectedDay", day)
+            startActivity(intent)
+
+        }
+
+        // Firestore 초기화
+        var firestore = FirebaseFirestore.getInstance()
+
+        // Firestore에서 일정 데이터 가져오기
+        /*firestore.collection("events")
+            .get()
+            .addOnSuccessListener { documents ->
+                val eventDates = HashSet<CalendarDay>()
+                for (document in documents) {
+                    val eventDate = document.getString("date")
+
+                    eventDate?.let {
+                        val year = it[0].toInt()
+                        val month = it[1].toInt() - 1
+                        val day = it[2].toInt()
+                        val calendarDay = CalendarDay.from(year, month, day)
+                        eventDates.add(calendarDay)
+                        binding.calendarview.addDecorator(
+                            EventDecorator(
+                                Color.parseColor("#0E406B"),
+                                Collections.singleton(CalendarDay.from(year, month - 1, day))
+                            )
+                        )
+                    }
+                }
+            }*/
+
     }
 
+    class EventDecorator(dates: Collection<CalendarDay>): DayViewDecorator {    // 일정이 있으면 점 찍기
+        var dates: HashSet<CalendarDay> = HashSet(dates)
 
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return dates.contains(day)
+        }
 
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(DotSpan(5F, Color.parseColor("#1D872A")))
+        }
+    }
+
+    class TodayDecorator : DayViewDecorator {
+        val date = CalendarDay.today()
+
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return day == date
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(StyleSpan(Typeface.NORMAL))
+            view?.addSpan(RelativeSizeSpan(1.0f))
+        }
+    }
+
+    class SatDecorator : DayViewDecorator {
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return day?.day?.let { dayOfMonth ->
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, day.year)
+                    set(Calendar.MONTH, day.month - 1) // Calendar.MONTH는 0부터 시작하므로 1을 빼줍니다.
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                }
+                val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
+                weekDay == Calendar.SATURDAY
+            } ?: false
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(ForegroundColorSpan(Color.BLUE))
+        }
+    }
+
+    class SunDecorator : DayViewDecorator {
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return day?.day?.let { dayOfMonth ->
+                val calendar = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, day.year)
+                    set(Calendar.MONTH, day.month - 1) // Calendar.MONTH는 0부터 시작하므로 1을 빼줍니다.
+                    set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                }
+                val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
+                weekDay == Calendar.SUNDAY
+            } ?: false
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(ForegroundColorSpan(Color.RED))
+        }
+    }
+
+    class OtherMonth(val selectedMonth: Int) : DayViewDecorator {
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            return day?.month != selectedMonth
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(ForegroundColorSpan(Color.GRAY))
+        }
+    }
 }
+

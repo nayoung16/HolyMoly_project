@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
     <EditText
+        android:id="@+id/title1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textSize="30sp"
         android:textColorHint="@color/gray"
-        android:hint="제목"/>
+        android:fontFamily="@font/ibmplexsanskr_semibold"
+        android:privateImeOptions="defaultInputmode=korean"
+        android:hint="@string/title"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +22,10 @@
             android:id="@+id/todaydate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/btn_base"
             android:layout_weight="2"
+            android:textColor="@color/black"
+            android:fontFamily="@font/ibmplexsanskr_semibold"
             android:layout_marginLeft="10dp"/>
         <ImageView
             android:layout_width="0dp"
@@ -34,47 +38,60 @@
             android:id="@+id/choosedate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/btn_base"
+            android:textColor="@color/black"
+            android:fontFamily="@font/ibmplexsanskr_semibold"
             android:layout_weight="2"
             android:layout_marginRight="10dp"/>
     </LinearLayout>
 
     <EditText
+        android:id="@+id/location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textSize="30sp"
         android:textColorHint="@color/gray"
         android:drawableStart="@drawable/map_marker"
-        android:hint="장소"/>
+        android:fontFamily="@font/ibmplexsanskr_semibold"
+        android:hint="@string/location"/>
     <EditText
+        android:id="@+id/alarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:drawableStart="@drawable/alarm"
         android:textSize="30sp"
-        android:hint="알림"/>
+        android:fontFamily="@font/ibmplexsanskr_semibold"
+        android:hint="@string/alarm"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="240dp"
         android:orientation="horizontal">
         <Button
+            android:id="@+id/flight"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
+            android:backgroundTint="@color/btn_base"
             android:drawableLeft="@drawable/airplane_takeoff"/>
         <Button
+            android:id="@+id/movie"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
+            android:backgroundTint="@color/btn_base"
             android:drawableLeft="@drawable/filmstrip"/>
         <Button
+            android:id="@+id/book"
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:layout_weight="1"
             android:layout_margin="10dp"
+            android:backgroundTint="@color/btn_base"
             android:drawableLeft="@drawable/book"/>
     </LinearLayout>
 
@@ -90,9 +107,9 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:textSize="25sp"
-            android:text="취소"/>
+            android:text="@string/cancel"
+            android:fontFamily="@font/ibmplexsanskr_semibold"/>
         <Button
-
             android:id="@+id/save"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -100,6 +117,7 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:textSize="25sp"
-            android:text="저장"/>
+            android:text="@string/save"
+            android:fontFamily="@font/ibmplexsanskr_semibold"/>
     </LinearLayout>
 </LinearLayout>
