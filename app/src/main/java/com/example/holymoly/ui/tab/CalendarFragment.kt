@@ -1,9 +1,7 @@
 package com.example.holymoly.ui.tab
 
-
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Color.parseColor
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.style.ForegroundColorSpan
@@ -13,23 +11,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton.Size
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
-import com.prolificinteractive.materialcalendarview.format.DateFormatTitleFormatter
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
-import com.prolificinteractive.materialcalendarview.format.TitleFormatter
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class CalendarFragment : Fragment() {
     lateinit var binding: FragmentCalendarBinding
