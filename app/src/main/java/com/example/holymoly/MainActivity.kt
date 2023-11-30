@@ -60,7 +60,18 @@ class MainActivity : AppCompatActivity() {
         //firestore initialize
         FirebaseApp.initializeApp(this)
 
-        firestoreHelper.addUserToFirestore("email", "nickName")
+        // FirebaseAuth 인스턴스 가져오기
+        val auth = Firebase.auth
+
+        // 현재 로그인된 사용자 가져오기
+        val currentUser = auth.currentUser
+
+        // 현재 로그인된 사용자의 이메일 가져오기
+        val userEmail = currentUser?.email
+
+        if (userEmail != null) {
+            firestoreHelper.addUserToFirestore(userEmail)
+        }
 
         if (savedInstanceState != null) {
             selectedPage = savedInstanceState.getInt(KEY_SELECTED_PAGE, 0)
@@ -174,8 +185,6 @@ class MainActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // firebaseauth를 사용하기 위한 인스턴스 get
-        auth = FirebaseAuth.getInstance()
 
         val navigationView: NavigationView = findViewById(R.id.nav_view)
 
