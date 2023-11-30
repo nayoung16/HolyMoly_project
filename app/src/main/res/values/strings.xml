@@ -31,6 +31,11 @@
     <string name="rest_holidays_this_year">년 남은 공휴일 수</string>
     <string name="holidays_this_month">이 달의 공휴일</string>
     <string name="holidays_each_month">월별 공휴일 수</string>
+    <string name="title">  제목</string>
+    <string name="location">  장소</string>
+    <string name="alarm">  알림</string>
+    <string name="cancel">취소</string>
+    <string name="save">저장</string>
     <string-array name="custom_months">
         <item>1월</item>
         <item>2월</item>

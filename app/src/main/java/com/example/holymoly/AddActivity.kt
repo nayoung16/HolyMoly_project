@@ -26,9 +26,6 @@ class AddActivity : AppCompatActivity() {
         val sharedPreference = getSharedPreferences("AddActivity", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreference.edit()
 
-        val calendar = Calendar.getInstance()
-
-
         val selectedYear = intent.getIntExtra("selectedYear", 0)
         val selectedMonth = intent.getIntExtra("selectedMonth", 0)
         val selectedDay = intent.getIntExtra("selectedDay", 0)
@@ -72,7 +69,7 @@ class AddActivity : AppCompatActivity() {
             datePicker.show(supportFragmentManager, datePicker.toString())
         }
 
-        var flag = 1
+        var flag = 0
         var isBase = true // 초기상태
         binding.flight.setOnClickListener(){
             flag = if(isBase) {
