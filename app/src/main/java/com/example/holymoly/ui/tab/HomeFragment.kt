@@ -42,16 +42,6 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         val yearAdapter = SolyearAdapter(requireContext(), binding.solyearSpinner, yearList)
         yearAdapter.setOnYearItemSelectedListener(this)
 
-        //각 달의 공휴일 수
-        val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
-            "Aug","Sep","Oct","Nov","Dec")
-
-        val holy2  = HolyDay(binding.solyearSpinner.selectedItem.toString())
-        var datas_each_month_holidays = mutableListOf<Int>(1,1,1,1,1,1,1,1,1,1,1,1,1)
-
-        binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
-        binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
-
         return binding.root
     }
 
@@ -89,6 +79,14 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         //이달의 공휴일 리사이클러 뷰
         binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(holidayDatas)
         binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+
+        //각 달의 공휴일 수
+        val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
+            "Aug","Sep","Oct","Nov","Dec")
+        var datas_each_month_holidays = holy.restHolyOfMonth()
+
+        binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
+        binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
     }
 
 }
