@@ -94,34 +94,6 @@ class FirestoreHelper {
         }
     }
 
-    suspend fun getEndMonthHolidaysFromFirestore(this_month:Int): List<Map<String, Any>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val documents = db.collection("user")
-                    .document(userEmail!!)
-                    .collection("holiday")
-                    .whereLessThanOrEqualTo("end_month", this_month)
-                    .get()
-                    .await()
-
-                Log.d("ny", "Number of documents: ${documents.size()}")
-
-                val holidayList = mutableListOf<Map<String, Any>>()
-
-                for (document in documents) {
-                    // 각 문서에 대한 처리
-                    val data = document.data
-                    // data를 사용하여 필요한 작업 수행
-                    holidayList.add(data)
-                }
-                return@withContext holidayList
-            } catch (exception: Exception) {
-                // 쿼리 실패 시 처리
-                Log.w(TAG, "Error getting documents: ", exception)
-                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
-            }
-        }
-    }
     suspend fun getAllHolidaysFromFirestore(): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
