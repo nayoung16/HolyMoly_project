@@ -77,7 +77,8 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 binding.holydaysOfMonthText.text = year + "년도 첫 공휴일"
                 binding.restOfYear.text = holy.totalHolyOfYear().toString() + "일"
                 holidayDatas = holy.FirstHolyListOfMonth()
-                datas_each_month_holidays = holy.totalHolyOfMonth()}
+                datas_each_month_holidays = holy.totalHolyOfMonth()
+            }
             
             var datas: List<List<String>>
 
@@ -93,7 +94,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
             }
             //각 달의 공휴일 리사이클러 뷰
-            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
+            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays, year)
             binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
     }}
 

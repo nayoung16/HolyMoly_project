@@ -120,6 +120,33 @@ class FirestoreHelper {
             }
         }
     }
+
+    suspend fun deleteHolidaysFromFirestore(holiday_title: String): List<Map<String, Any>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // 해당 holiday_title을 가진 문서를 찾기
+                val querySnapshot = db.collection("user")
+                    .document(userEmail!!)
+                    .collection("holiday")
+                    .whereEqualTo("holiday_title", holiday_title)
+                    .get()
+                    .await()
+
+                // 찾은 문서를 모두 삭제
+                for (document in querySnapshot.documents) {
+                    document.reference.delete().await()
+                }
+
+                // 삭제된 결과를 반환 (예: 삭제된 문서의 정보)
+                // 여기서는 빈 리스트를 반환하도록 하였습니다.
+                return@withContext emptyList()
+            } catch (exception: Exception) {
+                // 쿼리 실패 시 처리
+                Log.w(TAG, "Error getting documents: ", exception)
+                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
+            }
+        }
+    }
     companion object {
         private const val TAG = "FirestoreHelper"
     }
