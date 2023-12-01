@@ -1,141 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="@string/md_travel"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/md_travel_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="@string/md_home"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-            <RelativeLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight = "1"
-                android:layout_margin="10dp">
-                <ImageView
-                    android:id="@+id/md_book_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/md_book"
-                    android:adjustViewBounds="true"/>
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="@string/md_travel"/>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="마음 충전\n지식 충전"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="책 추천!"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="0dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/md_travel_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="10dp">
-                <ImageView
-                    android:id="@+id/md_movie_btn"
-                    android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="@string/md_home"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/md_movie"
-                    android:adjustViewBounds="true"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp">
-                    <TextView
+                    android:layout_weight = "1"
+                    android:layout_margin="5dp">
+                    <ImageView
+                        android:id="@+id/md_book_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/md_book"
+                        android:adjustViewBounds="true"/>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:gravity="center"
-                        android:text="너 F야?\n공감 펑펑"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"/>
-                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/md_book_text1"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:paddingRight="15dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/md_book_text2"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:paddingRight="15dp"/>
+                    </LinearLayout>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp">
+                    <ImageView
+                        android:id="@+id/md_movie_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/md_movie"
+                        android:adjustViewBounds="true"/>
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="인생 영화!"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-            </RelativeLayout>
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/md_movie_text1"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white"
+                            android:paddingRight="15dp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/md_movie_text2"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            android:paddingRight="15dp"/>
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="@string/md_hobby"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/md_hobby_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="@string/md_hobby"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/md_hobby_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+            <ImageButton
+                android:id="@+id/md_extra_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="30dp"
+                android:padding = "0dp"
+                android:src = "@drawable/md_extrabtn_plus"
+                android:textColor="@color/black"/>
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

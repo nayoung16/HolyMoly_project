@@ -1,7 +1,6 @@
 package com.example.holymoly
 
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -10,14 +9,9 @@ import kotlinx.coroutines.withContext
 
 class FirestoreHelper {
     private val db = Firebase.firestore
-    val auth = Firebase.auth
-
-    // 현재 로그인된 사용자 가져오기
-    val currentUser = auth.currentUser
-
-    // 현재 로그인된 사용자의 이메일 가져오기
-    val userEmail = currentUser?.email
-
+    //firestore에서 이메일 가져오기
+    val authHelper = AuthHelper()
+    val userEmail = authHelper.getCurrentUserEmail()
     fun addUserToFirestore(email: String) {
 
         val data = hashMapOf("user_email" to email)
@@ -54,42 +48,57 @@ class FirestoreHelper {
 
     }
 
-    suspend fun getEachDayHolidaysFromFirestore(new_start_year: Int, new_start_month: Int, new_start_date: Int,
-                                                new_end_year: Int, new_end_month: Int, new_end_date: Int): List<Map<String, Int>> {
+    suspend fun getMonthHolidaysFromFirestore(this_month:Int): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
-            val holidayList = mutableListOf<Map<String, Int>>()
-
             try {
-                val documents = db.collection("user")
+                val documents_start = db.collection("user")
                     .document(userEmail!!)
                     .collection("holiday")
-                    .whereEqualTo("start_year", new_start_year)
-                    .whereGreaterThanOrEqualTo("start_month", new_start_month)
-                    .whereLessThanOrEqualTo("end_month", new_end_month)
-                    .whereGreaterThanOrEqualTo("start_date", new_start_date)
-                    .whereLessThanOrEqualTo("end_date", new_end_date)
+                    .whereEqualTo("start_month", this_month)
                     .get()
                     .await()
 
-                for (document in documents) {
+                val documents_end = db.collection("user")
+                    .document(userEmail!!)
+                    .collection("holiday")
+                    .whereEqualTo("end_month", this_month)
+                    .get()
+                    .await()
+
+                Log.d("ny", "Number of documents: ${documents_start.size()}")
+                Log.d("ny", "Number of documents: ${documents_end.size()}")
+
+                val holidayList = mutableListOf<Map<String, Any>>()
+
+                for (document in documents_start) {
                     // 각 문서에 대한 처리
                     val data = document.data
                     // data를 사용하여 필요한 작업 수행
-                    holidayList.add(data as Map<String, Int>)
+                    holidayList.add(data)
                 }
+
+                for (document in documents_end) {
+                    // 각 문서에 대한 처리
+                    val data = document.data
+                    // data를 사용하여 필요한 작업 수행
+                    if (!holidayList.contains(data)) {
+                        holidayList.add(data)
+                    }
+                }
+                return@withContext holidayList
             } catch (exception: Exception) {
                 // 쿼리 실패 시 처리
                 Log.w(TAG, "Error getting documents: ", exception)
+                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
             }
-
-            return@withContext holidayList
         }
     }
-    suspend fun getAllHolidaysFromFirestore(email: String): List<Map<String, Any>> {
+
+    suspend fun getAllHolidaysFromFirestore(): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 val documents = db.collection("user")
-                    .document(email)
+                    .document(userEmail!!)
                     .collection("holiday")
                     .get()
                     .await()

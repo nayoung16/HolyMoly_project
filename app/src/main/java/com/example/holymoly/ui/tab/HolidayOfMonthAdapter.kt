@@ -19,7 +19,6 @@ class HolidayOfMonthAdapter (val datas : List<List<String>>)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyViewHolder).binding
 
-        Log.d("ny","test")
         if(datas[0][0] == "Item1") {
             Log.d("ny","test")
             binding.holidaysOfMonthName.text = "이번 달은"

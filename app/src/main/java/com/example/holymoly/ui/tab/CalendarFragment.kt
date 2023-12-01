@@ -1,5 +1,6 @@
 package com.example.holymoly.ui.tab
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -7,24 +8,29 @@ import android.os.Bundle
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
+import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
-import com.google.firebase.firestore.FirebaseFirestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
     lateinit var binding: FragmentCalendarBinding
+    //firestore
+    private val firestoreHelper = FirestoreHelper()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -78,9 +84,40 @@ class CalendarFragment : Fragment() {
         binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
         binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
 
+
         var c_year = CalendarDay.today().year   // 캘린더 화면으로 넘어왔을 때의 년도
         var c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
+        var holidayList : List<Map<String, Any>>
 
+        lifecycleScope.launch {
+
+            try {
+
+                 holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+
+                Log.d("ny", "Received holidayList: $holidayList")
+
+            } catch (e: Exception) {
+                // 예외 처리
+                Log.e(ContentValues.TAG, "Error fetching holidays: $e")
+            }
+
+        }
+
+        binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
+            // 초기화
+            binding.calendarview.removeDecorators()
+            binding.calendarview.invalidateDecorators()
+
+            binding.calendarview.addDecorators(
+                TodayDecorator(),
+                SatDecorator(),
+                SunDecorator(),
+                OtherMonth(date.month)
+            )
+        }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
             // 초기화
@@ -96,8 +133,24 @@ class CalendarFragment : Fragment() {
 
             c_year = date.year // 현재 연도
             c_month = date.month // 현재 월
+            lifecycleScope.launch {
 
+                try {
+
+                    holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                    // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                    // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+
+                    Log.d("ny", "Received holidayList: $holidayList")
+
+                } catch (e: Exception) {
+                    // 예외 처리
+                    Log.e(ContentValues.TAG, "Error fetching holidays: $e")
+                }
+
+            }
         }
+
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
             val year = date.year
             val month = date.month
@@ -111,8 +164,6 @@ class CalendarFragment : Fragment() {
 
         }
 
-        // Firestore 초기화
-        var firestore = FirebaseFirestore.getInstance()
 
         // Firestore에서 일정 데이터 가져오기
         /*firestore.collection("events")
