@@ -41,6 +41,16 @@
             android:layout_toEndOf="@+id/itemImage"
             android:layout_toRightOf="@+id/itemImage"
             android:layout_below="@+id/titleRecycler"/>
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:layout_toRightOf="@+id/titleRecycler"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="80dp"
+            android:fontFamily="@font/ibmplexsanskr_regular"
+            android:text="@string/delete"/>
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

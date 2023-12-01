@@ -78,6 +78,9 @@ class CalendarFragment : Fragment() {
         binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
         binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
 
+        var c_year = CalendarDay.today().year   // 캘린더 화면으로 넘어왔을 때의 년도
+        var c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
+
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
             // 초기화
@@ -90,6 +93,10 @@ class CalendarFragment : Fragment() {
                 SunDecorator(),
                 OtherMonth(date.month)
             )
+
+            c_year = date.year // 현재 연도
+            c_month = date.month // 현재 월
+
         }
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
             val year = date.year
