@@ -4,11 +4,17 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.holymoly.R
 import com.example.holymoly.databinding.ItemScheduleBinding
 
 class MyViewHolder3(val binding: ItemScheduleBinding) : RecyclerView.ViewHolder(binding.root)
 
-class UpcomingSchedulesAdapter(private val titles: List<String>, private val details: List<String>, private val images: List<Int>) :
+class UpcomingSchedulesAdapter(
+    val datas_holidays_title: MutableList<String>, val datas_holidays_start_year: MutableList<String>,
+    val datas_holidays_start_month: MutableList<String>,val datas_holidays_start_date: MutableList<String>,
+    val datas_holidays_end_year: MutableList<String>, val datas_holidays_end_month: MutableList<String>,
+    val datas_holidays_end_date: MutableList<String>, val datas_categories: MutableList<String>
+) :
     RecyclerView.Adapter<MyViewHolder3>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder3 {
@@ -18,20 +24,30 @@ class UpcomingSchedulesAdapter(private val titles: List<String>, private val det
     }
 
     override fun onBindViewHolder(holder: MyViewHolder3, position: Int) {
-        val currentTitle = titles[position]
-        val currentDetail = details[position]
-        val currentImage = images[position]
+        when (datas_categories[position]) {
+            "0" -> holder.binding.itemImage.setImageResource(R.drawable.ic_people)
+            "1" -> holder.binding.itemImage.setImageResource(R.drawable.ic_airplane_takeoff)
+            "2" -> holder.binding.itemImage.setImageResource(R.drawable.ic_book)
+            "3" -> holder.binding.itemImage.setImageResource(R.drawable.ic_movie)
+        }
 
-        holder.binding.titleRecycler.text = currentTitle
-        holder.binding.dateRecycler.text = currentDetail
-        holder.binding.itemImage.setImageResource(currentImage)
+        holder.binding.titleRecycler.text = datas_holidays_title[position]
+
+        if ( datas_holidays_start_year[position] == datas_holidays_end_year[position]
+            && datas_holidays_start_month[position] == datas_holidays_end_month[position]
+            && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {
+            holder.binding.dateRecycler.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+        }
+        else {
+            holder.binding.dateRecycler.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일" + " ~ " + datas_holidays_end_month[position] + "월" + datas_holidays_end_date[position] + "일"
+        }
 
         holder.binding.btnDelete.setOnClickListener{
             val alertDialogBuilder = AlertDialog.Builder(holder.itemView.context)
             alertDialogBuilder.setMessage("해당 일정을 삭제하시겠습니까?")
             alertDialogBuilder.setPositiveButton("삭제") { dialog, which ->
                 // db에서 일정 삭제!
-
+                val delete_title = datas_holidays_title[position]
                 // 삭제 후 다이얼로그 닫기
                 dialog.dismiss()
             }
@@ -45,6 +61,6 @@ class UpcomingSchedulesAdapter(private val titles: List<String>, private val det
     }
 
     override fun getItemCount(): Int {
-        return titles.size
+        return datas_holidays_title.size
     }
 }
