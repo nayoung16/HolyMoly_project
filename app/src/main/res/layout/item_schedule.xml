@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:textSize="17sp"
             android:layout_toRightOf="@+id/titleRecycler"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="80dp"
             android:fontFamily="@font/ibmplexsanskr_regular"
             android:text="@string/delete"/>

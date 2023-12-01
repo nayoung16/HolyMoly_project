@@ -30,4 +30,8 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="dialogTheme">
+        <item name="android:textAppearance">@font/ibmplexsanskr_semibold</item>
+        <item name="android:windowBackground">@drawable/round_schedule</item>
+    </style>
 </resources>
