@@ -11,6 +11,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.HolyDay
 import com.example.holymoly.databinding.FragmentHomeBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -53,42 +57,52 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
 
     //main page에 공휴일 정보 표시하기
     private fun setMainPage(year: String){
-        //공휴일 정보 가져오기
-        val holy = HolyDay(year)
-        val holidayDatas : List<List<String>>
+        GlobalScope.launch(Dispatchers.Main){
+            //공휴일 정보 가져오기 - 생성자 값 setting 될 때까지 대기
+            val holy = fetchHolyDay(year)
+            val holidayDatas : List<List<String>>
+            val datas_each_month_holidays : List<Int>
+            val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
+                "Aug","Sep","Oct","Nov","Dec")
 
-        if(year == currentYear.toString()) { //올해일 경우
-            //올해 남은 공휴일 수
-            binding.restOfYear.text = holy.restHolyOfYear().toString()
-            //이 달의 공휴일
-            binding.holydaysOfMonthText.text = "이 달의 공휴일"
-            holidayDatas = holy.HolyListOfMonth() }
-        else{  //다른 년도일 경우
-            binding.holydaysOfMonthText.text = year + "년도 첫 공휴일"
-            binding.restOfYear.text = holy.totalHolyOfYear().toString() + "일"
-            holidayDatas = holy.FirstHolyListOfMonth()}
-        var datas: List<List<String>>
+            if(year == currentYear.toString()) { //올해일 경우
+                //올해 남은 공휴일 수
+                binding.restOfYear.text = holy.restHolyOfYear().toString()
+                //이 달의 공휴일
+                binding.holydaysOfMonthText.text = "이 달의 공휴일"
+                holidayDatas = holy.HolyListOfMonth()
+                datas_each_month_holidays = holy.restHolyOfMonth()
+            }
+            else{  //다른 년도일 경우
+                binding.holydaysOfMonthText.text = year + "년도 첫 공휴일"
+                binding.restOfYear.text = holy.totalHolyOfYear().toString() + "일"
+                holidayDatas = holy.FirstHolyListOfMonth()
+                datas_each_month_holidays = holy.totalHolyOfMonth()}
+            
+            var datas: List<List<String>>
 
-        if(holidayDatas.isEmpty()) {
-            datas = listOf(
-                listOf("Item1")
-            )
-            binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(datas)
-            binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
-        } else {
-            //이달의 공휴일 리사이클러 뷰
-            binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(holidayDatas)
-            binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+            if(holidayDatas.isEmpty()) {
+                datas = listOf(
+                  listOf("Item1")
+                )
+                binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(datas)
+                binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+            } else {
+              //이달의 공휴일 리사이클러 뷰
+                binding.holydaysOfMonthLayout.adapter = HolidayOfMonthAdapter(holidayDatas)
+                binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
+            }
+            //각 달의 공휴일 리사이클러 뷰
+            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
+            binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
+    }}
+
+    //HolyDay 생성자 패치
+    private suspend fun fetchHolyDay(year: String): HolyDay{
+        //HolyDay의 값을 비동기적으로 가져옴
+        return withContext(Dispatchers.IO){
+            HolyDay(year)
         }
-
-
-        //각 달의 공휴일 수
-        val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
-            "Aug","Sep","Oct","Nov","Dec")
-        var datas_each_month_holidays = holy.restHolyOfMonth()
-
-        binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays)
-        binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
     }
 
 }

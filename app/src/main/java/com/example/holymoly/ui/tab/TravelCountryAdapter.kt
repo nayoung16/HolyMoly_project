@@ -8,16 +8,16 @@ import com.example.holymoly.databinding.MdTravelItemviewBinding
 class MyTravelViewHolder(val binding: MdTravelItemviewBinding)
     : RecyclerView.ViewHolder(binding.root)
 
-class TravelCountryAdapter (val datas : List<Int>)
+class TravelCountryAdapter ( )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
-    override fun getItemCount(): Int = datas.size
+    override fun getItemCount(): Int = 1
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyTravelViewHolder).binding
         val resources = holder.itemView.context.resources
-        val textID = resources.getIdentifier("md_travel_$position", "string", "com.example.holymoly")
-        val photoID = resources.getIdentifier("travel_country$position", "drawable", "com.example.holymoly")
+        val textID = resources.getIdentifier("md_travel_${position+1}", "string", "com.example.holymoly")
+        val photoID = resources.getIdentifier("travel_country${position+1}", "drawable", "com.example.holymoly")
 
         binding.mdTravelBtnText.setText(textID)
         binding.mdTravelBtnImage.setImageResource(photoID)
