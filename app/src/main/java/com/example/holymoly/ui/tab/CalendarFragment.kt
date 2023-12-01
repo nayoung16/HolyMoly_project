@@ -24,7 +24,9 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -93,7 +95,9 @@ class CalendarFragment : Fragment() {
 
             try {
 
-                 holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                holidayList = withContext(Dispatchers.IO) {
+                    firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                }
                 // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
                 // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
 

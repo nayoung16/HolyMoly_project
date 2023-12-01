@@ -1,5 +1,6 @@
 package com.example.holymoly.ui.tab
 
+import android.app.ProgressDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,9 +18,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
+@Suppress("DEPRECATION")
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeFragment : Fragment() , OnYearItemSelectedListener{
     private lateinit var binding : FragmentHomeBinding
+    // ProgressDialog 선언
+    private lateinit var progressDialog: ProgressDialog
 
     private val currentYear = LocalDate.now().year
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +34,9 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // ProgressDialog 초기화
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog.setMessage("로딩 중...")
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -58,6 +65,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
     //main page에 공휴일 정보 표시하기
     private fun setMainPage(year: String){
         GlobalScope.launch(Dispatchers.Main){
+
             //공휴일 정보 가져오기 - 생성자 값 setting 될 때까지 대기
             val holy = fetchHolyDay(year)
             val holidayDatas : List<List<String>>
@@ -79,7 +87,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 holidayDatas = holy.FirstHolyListOfMonth()
                 datas_each_month_holidays = holy.totalHolyOfMonth()
             }
-            
+
             var datas: List<List<String>>
 
             if(holidayDatas.isEmpty()) {
