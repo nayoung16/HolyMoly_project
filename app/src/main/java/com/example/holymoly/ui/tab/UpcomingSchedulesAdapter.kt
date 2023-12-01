@@ -1,5 +1,6 @@
 package com.example.holymoly.ui.tab
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,23 @@ class UpcomingSchedulesAdapter(private val titles: List<String>, private val det
         holder.binding.titleRecycler.text = currentTitle
         holder.binding.dateRecycler.text = currentDetail
         holder.binding.itemImage.setImageResource(currentImage)
+
+        holder.binding.btnDelete.setOnClickListener{
+            val alertDialogBuilder = AlertDialog.Builder(holder.itemView.context)
+            alertDialogBuilder.setMessage("해당 일정을 삭제하시겠습니까?")
+            alertDialogBuilder.setPositiveButton("삭제") { dialog, which ->
+                // db에서 일정 삭제!
+
+                // 삭제 후 다이얼로그 닫기
+                dialog.dismiss()
+            }
+            alertDialogBuilder.setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+            }
+
+            val alertDialog = alertDialogBuilder.create()
+            alertDialog.show()
+        }
     }
 
     override fun getItemCount(): Int {
