@@ -2,15 +2,18 @@ package com.example.holymoly
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class SplashActivity : AppCompatActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -34,7 +37,7 @@ class SplashActivity : AppCompatActivity() {
             }
             // 현재 액티비티 닫기
             finish()
-        }, 3000) // 3초
+        }, 2000) // 3초
 
 
     }

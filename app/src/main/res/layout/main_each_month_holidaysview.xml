@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:background="@drawable/main_each_month_holidays_box"
     android:layout_margin="5dp"
     android:layout_width="match_parent"
     android:layout_height="50dp">
     <TextView
         android:id="@+id/each_month"
-        android:fontFamily="@font/ibmplexsanskr_regular"
+        android:fontFamily="@font/ibmplexsanskr_semibold"
         android:textSize="20sp"
         android:layout_marginStart="15dp"
         android:layout_width="0dp"

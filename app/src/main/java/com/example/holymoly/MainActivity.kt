@@ -5,9 +5,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -18,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -38,6 +41,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
@@ -47,7 +53,6 @@ class MainActivity : AppCompatActivity() {
     private var selectedPage = 0
 
     // 로그아웃 구현을 위한 변수
-    private lateinit var auth : FirebaseAuth
     private lateinit var googleSignInClient : GoogleSignInClient
 
 
@@ -180,30 +185,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //로그아웃
-        // 구글 로그아웃을 위해 로그인 세션 가져오기
-        var gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-
         val navigationView: NavigationView = findViewById(R.id.nav_view)
 
         // Get the header view from the NavigationView
         val headerView: View = navigationView.getHeaderView(0)
-
-        // Find the ImageView inside the header view
-        val signOutImageView: ImageView = headerView.findViewById(R.id.sign_out)
-        signOutImageView.setOnClickListener{
-            Firebase.auth.signOut()
-            googleSignInClient?.signOut()
-
-            googleSignInClient!!.signOut().addOnCompleteListener(this) {
-                startActivity(Intent(this, AuthActivity::class.java))
-            }
-        }
 
         //이메일과 사용자 정보 가져오기
         val user: FirebaseUser? = auth.currentUser
@@ -219,10 +204,57 @@ class MainActivity : AppCompatActivity() {
                 Picasso.get().load(photoUrl).into(headerImageView)
             }
         }
+
+        //오늘 날짜 표시하기
+        val localDate = LocalDate.now()
+        val dayOfWeekDisplayName = localDate.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)
+        val today_text = "${localDate.year}년 ${localDate.monthValue}월 ${localDate.dayOfMonth}일 ($dayOfWeekDisplayName)"
+
+        val menu: Menu = navigationView.menu
+
+        // Menu에서 원하는 MenuItem 가져오기 (예: nav_signout)
+        val todayMenuItem: MenuItem = menu.findItem(R.id.nav_today)
+
+        // 동적으로 제목 설정
+        todayMenuItem.title = today_text
+        //로그아웃
+        // 구글 로그아웃을 위해 로그인 세션 가져오기
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_signout -> {
+                    Firebase.auth.signOut()
+                    googleSignInClient?.signOut()
+
+                    googleSignInClient!!.signOut().addOnCompleteListener(this) {
+                        startActivity(Intent(this, AuthActivity::class.java))
+                    }
+                }
+
+                R.id.nav_my_holidays -> {
+                    navController.navigate(R.id.nav_my_holidays)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+
+                R.id.nav_my_flight -> {
+                    navController.navigate(R.id.nav_my_flight)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+
+                R.id.nav_today -> {
+                    Toast.makeText(this, "행복한 하루 되세요 :)", Toast.LENGTH_SHORT).show()
+                }
+            }
+            // 메뉴 아이템을 클릭한 후에 Navigation Drawer를 닫고 싶다면 true를 반환합니다.
+            // 그렇지 않으면 false를 반환하면서 Drawer가 열려있게 됩니다.
+            true
+        }
     }
-
-
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
