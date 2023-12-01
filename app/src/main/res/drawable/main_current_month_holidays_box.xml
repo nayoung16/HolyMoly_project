@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <corners android:radius="5dp"/>   <!-- 모서리 둥글기 정도를 설정하세요 -->
-    <stroke android:color="#FAF3F0" android:width="0.7dp"/>
-    <solid android:color="#FAF3F0"/>
+    <solid android:color="#F0E9F9"/>
+    <stroke android:width="0.7dp" android:color="#F0E9F9"/>
 </shape>

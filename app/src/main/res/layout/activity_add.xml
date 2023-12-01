@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:textSize="30sp"
         android:textColorHint="@color/gray"
         android:fontFamily="@font/ibmplexsanskr_semibold"
@@ -53,6 +54,7 @@
         android:textSize="30sp"
         android:textColorHint="@color/gray"
         android:drawableStart="@drawable/map_marker"
+        android:drawablePadding="8dp"
         android:fontFamily="@font/ibmplexsanskr_semibold"
         android:hint="@string/location"/>
     <EditText
@@ -61,40 +63,53 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:drawableStart="@drawable/alarm"
+        android:drawablePadding="8dp"
         android:textSize="30sp"
         android:fontFamily="@font/ibmplexsanskr_semibold"
         android:hint="@string/alarm"/>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/flight"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/btn_base"
-            android:drawableLeft="@drawable/airplane_takeoff"/>
-        <Button
-            android:id="@+id/movie"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/btn_base"
-            android:drawableLeft="@drawable/filmstrip"/>
-        <Button
-            android:id="@+id/book"
-            android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/btn_base"
-            android:drawableLeft="@drawable/book"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/ibmplexsanskr_regular"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:text="@string/category"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/flight"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/btn_base"
+                android:drawableLeft="@drawable/airplane_takeoff"/>
+            <Button
+                android:id="@+id/movie"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/btn_base"
+                android:drawableLeft="@drawable/filmstrip"/>
+            <Button
+                android:id="@+id/book"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/btn_base"
+                android:drawableLeft="@drawable/book"/>
+        </LinearLayout>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
