@@ -86,6 +86,24 @@ class CalendarFragment : Fragment() {
 
         var c_year = CalendarDay.today().year
         var c_month = CalendarDay.today().month
+        var holidayList : List<Map<String, Any>>
+
+        lifecycleScope.launch {
+
+            try {
+
+                 holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+
+                Log.d("ny", "Received holidayList: $holidayList")
+
+            } catch (e: Exception) {
+                // 예외 처리
+                Log.e(ContentValues.TAG, "Error fetching holidays: $e")
+            }
+
+        }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
             // 초기화
@@ -114,13 +132,15 @@ class CalendarFragment : Fragment() {
 
             c_year = date.year // 현재 연도
             c_month = date.month // 현재 월
+
             lifecycleScope.launch {
 
                 try {
-                    val holidayList = firestoreHelper.getEachMonthHolidaysFromFirestore(c_year, c_month)
 
+                    holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
                     // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
                     // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+
                     Log.d("ny", "Received holidayList: $holidayList")
 
                 } catch (e: Exception) {
