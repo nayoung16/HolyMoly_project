@@ -1,12 +1,13 @@
 package com.example.holymoly.ui.tab
 
-import android.app.ProgressDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,10 +23,9 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 class HomeFragment : Fragment() , OnYearItemSelectedListener{
     private lateinit var binding : FragmentHomeBinding
-    // ProgressDialog 선언
-    private lateinit var progressDialog: ProgressDialog
 
     private val currentYear = LocalDate.now().year
+    private var isScrolledDown = false // 스크롤 여부를 추적하는 변수
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -34,9 +34,6 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // ProgressDialog 초기화
-        progressDialog = ProgressDialog(requireContext())
-        progressDialog.setMessage("로딩 중...")
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
@@ -44,6 +41,25 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         val yearList = setYearList()
         val yearAdapter = SolyearAdapter(requireContext(), binding.solyearSpinner, yearList)
         yearAdapter.setOnYearItemSelectedListener(this)
+
+        val yearAdapter2 = SolyearAdapter(requireContext(), binding.solyearSpinner2, yearList)
+        yearAdapter.setOnYearItemSelectedListener(this)
+
+        val scrollView : NestedScrollView = binding.scrollView
+        val firstLayout : LinearLayout = binding.firstLayout
+        val secondLayout : LinearLayout = binding.secondLayout
+
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+            if (scrollView.scrollY > 0) {
+                // 스크롤이 발생하면 두 번째 레이아웃을 보이도록 설정
+                firstLayout.visibility = View.GONE
+                secondLayout.visibility = View.VISIBLE
+            } else {
+                // 스크롤이 맨 위로 올라가면 다시 첫 번째 레이아웃을 보이도록 설정
+                firstLayout.visibility = View.VISIBLE
+                secondLayout.visibility = View.GONE
+            }
+        }
 
         return binding.root
     }

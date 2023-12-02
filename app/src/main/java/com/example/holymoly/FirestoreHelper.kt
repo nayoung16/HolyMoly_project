@@ -122,13 +122,13 @@ class FirestoreHelper {
     }
 
     fun deleteHolidaysFromFirestore(delete_title: String) {
-        db.collection("user")
-            .document(userEmail!!)
-            .collection("holiday")
-            .document(delete_title)
-            .delete()
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+            db.collection("user")
+                .document(userEmail!!)
+                .collection("holiday")
+                .document(delete_title)
+                .delete()
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
     }
 
     companion object {
