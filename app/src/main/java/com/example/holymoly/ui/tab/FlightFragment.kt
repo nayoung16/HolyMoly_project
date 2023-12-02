@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.holymoly.databinding.FragmentFlightBinding
 
-class FlightFragment : Fragment() {
+class FlightFragment : Fragment(), OnCountryItemSelectedListener {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -16,6 +16,18 @@ class FlightFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding = FragmentFlightBinding.inflate(inflater, container, false)
 
+        //나라 선택 어댑터
+        val countryList = listOf("ICN", "TYO")
+        //출발 나라
+        val countryAdapterFrom = FlightyCountryAdapter(requireContext(), binding.flightyFrom, countryList)
+        countryAdapterFrom.setOnCountryItemSelectedListener(this)
+        //도착 나라
+        val countryAdapterTo = FlightyCountryAdapter(requireContext(), binding.flightyTo, countryList)
+        countryAdapterTo.setOnCountryItemSelectedListener(this)
+
         return binding.root
+    }
+
+    override fun onCountryItemSelected(CountryItem: String) {
     }
 }
