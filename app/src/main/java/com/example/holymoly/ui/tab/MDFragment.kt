@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.HobbyAdapter
 import com.example.holymoly.R
+import com.example.holymoly.SetOnTravelItemClickListener
 import com.example.holymoly.TravelCountryAdapter
 import com.example.holymoly.databinding.FragmentMDBinding
 import java.time.LocalDate
@@ -30,7 +31,13 @@ class MDFragment : Fragment() {
         //여행지 정보 어댑터 연결
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         binding.mdTravelLayout.layoutManager = layoutManager
-        binding.mdTravelLayout.adapter = TravelCountryAdapter()
+        val travelAdapter = TravelCountryAdapter()
+        binding.mdTravelLayout.adapter = travelAdapter
+        travelAdapter.TravelItemClick(object : SetOnTravelItemClickListener{  //리스너 함수 등록
+            override fun showPopupTravel() {
+                PopupMD(requireContext()).show()
+            }
+        })
         layoutManager.scrollToPosition(month-1) //현재 달에 대한 정보를 가운데로 배치
 
         //hobby 어댑터 연결
@@ -42,8 +49,19 @@ class MDFragment : Fragment() {
             extraButtonClick()
         }
 
+        //책 추천 리스너 등록
+        binding.mdBookBtn.setOnClickListener{
+            showPopupBook()
+        }
+
+        //영화 추천 리스너 등록
+        binding.mdMovieBtn.setOnClickListener{
+            showPopupMovie()
+        }
+
         return binding.root
     }
+
 
     // 랜덤 hobby 추천을 위한 set 생성
     fun getRandomHobbySet() : Set<Int> {
@@ -65,5 +83,13 @@ class MDFragment : Fragment() {
             HobbyAdapter.show = true
         }
         hobbyAdapter.notifyDataSetChanged()
+    }
+
+    private fun showPopupBook() {
+        PopupMD(requireContext()).show()
+    }
+
+    private fun showPopupMovie(){
+        PopupMD(requireContext()).show()
     }
 }

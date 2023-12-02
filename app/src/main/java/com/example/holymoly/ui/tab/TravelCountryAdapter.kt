@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.databinding.MdTravelItemviewBinding
 
+interface SetOnTravelItemClickListener{
+    fun showPopupTravel()
+}
 class MyTravelViewHolder(val binding: MdTravelItemviewBinding)
     : RecyclerView.ViewHolder(binding.root)
 
 class TravelCountryAdapter ( )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-
-    override fun getItemCount(): Int = 1
+    private var onTravelItemClickListener: SetOnTravelItemClickListener ?= null
+    override fun getItemCount(): Int = 12
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyTravelViewHolder).binding
@@ -21,12 +24,21 @@ class TravelCountryAdapter ( )
 
         binding.mdTravelBtnText.setText(textID)
         binding.mdTravelBtnImage.setImageResource(photoID)
+
+        //클릭 리스너 등록
+        binding.root.setOnClickListener{
+            onTravelItemClickListener?.showPopupTravel()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
     {
         val binding = MdTravelItemviewBinding.inflate(LayoutInflater.from(parent.context),parent, false)
         return MyTravelViewHolder(binding)
+    }
+
+    fun TravelItemClick(click : SetOnTravelItemClickListener){
+        this.onTravelItemClickListener = click
     }
 
 }
