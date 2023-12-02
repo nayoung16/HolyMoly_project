@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_margin="5dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="3dp"
     app:contentPadding="4dp">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:orientation="horizontal"
         android:background="@drawable/rounded_box_my_holidays">
         <ImageView
             android:id="@+id/itemImage"
@@ -23,34 +22,44 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:src="@drawable/ic_launcher_foreground"/>
-        <TextView
-            android:id="@+id/titleRecycler"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:fontFamily="@font/ibmplexsanskr_bold"
-            android:layout_toEndOf="@+id/itemImage"
-            android:layout_toRightOf="@+id/itemImage"
-            android:layout_alignParentTop="true"/>
-        <TextView
-            android:id="@+id/dateRecycler"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:fontFamily="@font/ibmplexsanskr_regular"
-            android:layout_toEndOf="@+id/itemImage"
-            android:layout_toRightOf="@+id/itemImage"
-            android:layout_below="@+id/titleRecycler"/>
-        <Button
-            android:id="@+id/btn_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="17sp"
-            android:layout_toRightOf="@+id/titleRecycler"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="80dp"
-            android:fontFamily="@font/ibmplexsanskr_regular"
-            android:text="@string/delete"/>
-    </RelativeLayout>
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/titleRecycler"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:textSize="25sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/ibmplexsanskr_bold"/>
+                <Button
+                    android:id="@+id/btn_delete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:width="20dp"
+                    android:height="15dp"
+                    android:layout_weight="1"
+                    android:textSize="15sp"
+                    android:fontFamily="@font/ibmplexsanskr_regular"
+                    android:text="@string/delete"/>
+            </LinearLayout>
+            <TextView
+                android:id="@+id/dateRecycler"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:fontFamily="@font/ibmplexsanskr_regular"
+                android:layout_toEndOf="@+id/itemImage"
+                android:layout_toRightOf="@+id/itemImage"
+                android:layout_below="@+id/titleRecycler"/>
+        </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</LinearLayout>
