@@ -2,8 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_today"
+            android:icon="@drawable/ic_calendar_today"
+            android:title="@string/menu_today" />
         <item
             android:id="@+id/nav_my_holidays"
             android:icon="@drawable/ic_menu_my_holidays"
@@ -12,5 +15,11 @@
             android:id="@+id/nav_my_flight"
             android:icon="@drawable/ic_menu_my_flight"
             android:title="@string/menu_my_flight" />
+
+        <item
+            android:id="@+id/nav_signout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_sign_out"
+            android:layout_marginTop="50dp" /> <!-- 간격을 조절하려면 이 부분을 조절 -->
     </group>
 </menu>

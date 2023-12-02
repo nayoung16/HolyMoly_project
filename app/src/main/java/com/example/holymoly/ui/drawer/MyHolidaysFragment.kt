@@ -47,12 +47,12 @@ class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holiday
         if ( datas_holidays_start_year[position] == datas_holidays_end_year[position]
             && datas_holidays_start_month[position] == datas_holidays_end_month[position]
             && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {
-            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월 " + datas_holidays_start_date[position] + "일"
             binding.itemDataHolidaysEndDate.text = " "
         }
         else {
-            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
-            binding.itemDataHolidaysEndDate.text = " ~ " + datas_holidays_end_month[position] + "월" + datas_holidays_end_date[position] + "일"
+            binding.itemDataHolidaysStartDate.text = datas_holidays_start_month[position] + "월 " + datas_holidays_start_date[position] + "일"
+            binding.itemDataHolidaysEndDate.text = " ~ " + datas_holidays_end_month[position] + "월 " + datas_holidays_end_date[position] + "일"
         }
 
     }
