@@ -20,6 +20,30 @@
                 app:mcv_selectionColor="@color/gblue"
                 app:mcv_weekDayTextAppearance="@font/ibmplexsanskr_semibold"
                 app:mcv_showOtherDates="all" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/clickdate"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/ibmplexsanskr_semibold"
+                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/rounded_box_my_holidays"/>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="95dp"
+                    android:backgroundTint="@color/purple_dot"
+                    app:srcCompat = "@drawable/plus"/>
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/schedule_recycler"
                 android:layout_width="match_parent"

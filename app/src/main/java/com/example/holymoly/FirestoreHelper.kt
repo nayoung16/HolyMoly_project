@@ -121,8 +121,6 @@ class FirestoreHelper {
         }
     }
 
-
-
     fun deleteHolidaysFromFirestore(delete_title: String) {
             db.collection("user")
                 .document(userEmail!!)

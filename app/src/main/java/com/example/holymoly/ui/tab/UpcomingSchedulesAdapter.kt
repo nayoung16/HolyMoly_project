@@ -29,30 +29,31 @@ class UpcomingSchedulesAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder3, position: Int) {
-        when (datas_categories[position]) {
+        when (datas_categories[position]) {     // 카테고리에 맞춰서 이미지 띄우기
             "0" -> holder.binding.itemImage.setImageResource(R.drawable.ic_people)
             "1" -> holder.binding.itemImage.setImageResource(R.drawable.ic_airplane_takeoff)
             "2" -> holder.binding.itemImage.setImageResource(R.drawable.ic_book)
             "3" -> holder.binding.itemImage.setImageResource(R.drawable.ic_movie)
         }
 
-        holder.binding.titleRecycler.text = datas_holidays_title[position]
+        holder.binding.titleRecycler.text = datas_holidays_title[position]  // 일정 제목
 
         if ( datas_holidays_start_year[position] == datas_holidays_end_year[position]
             && datas_holidays_start_month[position] == datas_holidays_end_month[position]
-            && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {
+            && datas_holidays_start_date[position] == datas_holidays_end_date[position]) {  // 일정 시작, 끝
             holder.binding.dateRecycler.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일"
         }
         else {
             holder.binding.dateRecycler.text = datas_holidays_start_month[position] + "월" + datas_holidays_start_date[position] + "일" + " ~ " + datas_holidays_end_month[position] + "월" + datas_holidays_end_date[position] + "일"
         }
 
-        holder.binding.btnDelete.setOnClickListener{
+        holder.binding.btnDelete.setOnClickListener{    // 일정 삭제 버튼 누르면
             val alertDialogBuilder = AlertDialog.Builder(holder.itemView.context)
             alertDialogBuilder.setMessage("해당 일정을 삭제하시겠습니까?")
             alertDialogBuilder.setPositiveButton("삭제") { dialog, which ->
 
                 val delete_title = datas_holidays_title[position]
+
                 // 여기서 삭제
                 firestoreHelper.deleteHolidaysFromFirestore(delete_title)
                 dialog.dismiss()
