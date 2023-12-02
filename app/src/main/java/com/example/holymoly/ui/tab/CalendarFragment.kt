@@ -1,6 +1,7 @@
 package com.example.holymoly.ui.tab
 
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -15,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
@@ -36,6 +38,8 @@ class CalendarFragment : Fragment() {
     lateinit var binding: FragmentCalendarBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
+
+    var holidayList : List<Map<String, Any>>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -47,7 +51,6 @@ class CalendarFragment : Fragment() {
         // binding 초기화
         binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
-        // Inflate the layout for this fragment
         return binding.root
     }
 
@@ -62,9 +65,10 @@ class CalendarFragment : Fragment() {
             setTitleFormatter(MonthArrayTitleFormatter(resources.getTextArray(R.array.custom_months)))
             setHeaderTextAppearance(R.style.CalendarTitle)
             setPadding(0, -20, 0, 30)
-            isDynamicHeightEnabled = true
+            isDynamicHeightEnabled = true   // 달력이 유동적으로 길어졌다가 짧아졌다가 함
         }
-        binding.calendarview.setSelectedDate(CalendarDay.today())
+
+        binding.calendarview.setSelectedDate(CalendarDay.today())   // 오늘 날짜에 동그라미
 
         binding.calendarview.addDecorators(
             TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month)
@@ -73,7 +77,12 @@ class CalendarFragment : Fragment() {
 
         var c_year = CalendarDay.today().year   // 캘린더 화면으로 넘어왔을 때의 년도
         var c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
-        var holidayList : List<Map<String, Any>>? = null
+        var c_day = CalendarDay.today().day // 캘린더 화면으로 넘어왔을 때의 일
+
+
+
+        binding.clickdate.text = "${c_year}년 ${c_month}월 ${c_day}일"     // 캘린더 화면으로 넘어왔을 때의 날짜를 띄워줌
+
 
         //데이터 읽어오고 ui 설정하는 함수
         fun readDataAndSetUI(year: Int, month: Int) {
@@ -118,59 +127,7 @@ class CalendarFragment : Fragment() {
 
 
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
-            val year = date.year
-            val month = date.month
-            val day = date.day
-
-            val year1 = date.year.toString()
-            val month1 = if (date.month < 10) "0${date.month}" else date.month.toString()
-            val day1 = if (date.day < 10) "0${date.day}" else date.day.toString()
-
-            val combinedDate = "$year1$month1$day1" // 내가 클릭한 날
-
-            val adapter = UpcomingSchedulesAdapter(
-                mutableListOf(), mutableListOf(), mutableListOf(),
-                mutableListOf(), mutableListOf(), mutableListOf(),
-                mutableListOf(), mutableListOf()
-            ) // 빈 어댑터 생성
-            if (holidayList != null) {
-                holidayList!!.forEach { holiday ->
-                    val startYear = holiday["start_year"].toString()
-                    val startMonth = holiday["start_month"] as Long
-                    val startMonth1 = if (startMonth.toInt() < 10) "0${startMonth.toInt()}" else (startMonth.toInt()).toString()
-                    val startDate = holiday["start_date"] as Long
-                    val startDate1 = if (startDate.toInt() < 10) "0${startDate.toInt()}" else (startDate.toInt()).toString()
-                    val start = "$startYear$startMonth1$startDate1" // 일정 시작 날짜
-
-                    val endYear = holiday["end_year"].toString()
-                    val endMonth = holiday["end_month"] as Long
-                    val endMonth1 = if (endMonth.toInt() < 10) "0${endMonth.toInt()}" else (endMonth.toInt()).toString()
-                    val endDate = holiday["end_date"] as Long
-                    val endDate1 = if (endDate.toInt() < 10) "0${endDate.toInt()}" else (endDate.toInt()).toString()
-                    val end = "$endYear$endMonth1$endDate1" // 일정 끝 날짜
-
-                    // 클릭된 날짜가 해당 일정의 시작과 종료 날짜 사이에 있는지 확인
-                    if(combinedDate.toInt() in start.toInt()..end.toInt()) {
-                        adapter.datas_holidays_title.add(holiday["holiday_title"].toString())
-                        adapter.datas_holidays_start_year.add(holiday["start_year"].toString())
-                        adapter.datas_holidays_start_month.add(holiday["start_month"].toString())
-                        adapter.datas_holidays_start_date.add(holiday["start_date"].toString())
-                        adapter.datas_holidays_end_year.add(holiday["end_year"].toString())
-                        adapter.datas_holidays_end_month.add(holiday["end_month"].toString())
-                        adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
-                        adapter.datas_categories.add(holiday["category"].toString())
-                    }
-                }
-
-                binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
-                binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
-            }
-
-            val intent = Intent(context, AddActivity::class.java)
-            intent.putExtra("selectedYear", year)
-            intent.putExtra("selectedMonth", month)
-            intent.putExtra("selectedDay", day)
-            startActivity(intent)
+            dateSelection(date)
         }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
@@ -189,29 +146,98 @@ class CalendarFragment : Fragment() {
             c_month = date.month // 현재 월
 
             readDataAndSetUI(c_year, c_month)
+
         }
     }
 
-    class EventDecorator(private val dates: HashSet<CalendarDay>) : DayViewDecorator {
+    fun dateSelection(date: CalendarDay) {  // 날짜 선택
+        val year = date.year
+        val month = date.month
+        val day = date.day
+
+        binding.clickdate.text = "${year}년 ${month}월 ${day}일"   // 클릭된 날짜 띄워주기
+
+        val year1 = date.year.toString()
+        val month1 = if (date.month < 10) "0${date.month}" else date.month.toString()
+        val day1 = if (date.day < 10) "0${date.day}" else date.day.toString()
+
+        val combinedDate = "$year1$month1$day1" // 내가 클릭한 날 스트링으로 저장
+
+        val adapter = UpcomingSchedulesAdapter( // 빈 어댑터 생성
+            mutableListOf(), mutableListOf(), mutableListOf(),
+            mutableListOf(), mutableListOf(), mutableListOf(),
+            mutableListOf(), mutableListOf()
+        )
+        if (holidayList != null) {
+            holidayList!!.forEach { holiday ->
+                val startYear = holiday["start_year"].toString()
+                val startMonth = holiday["start_month"] as Long
+                val startMonth1 = if (startMonth.toInt() < 10) "0${startMonth.toInt()}" else (startMonth.toInt()).toString()
+                val startDate = holiday["start_date"] as Long
+                val startDate1 = if (startDate.toInt() < 10) "0${startDate.toInt()}" else (startDate.toInt()).toString()
+                val start = "$startYear$startMonth1$startDate1" // 일정 시작 날짜
+
+                val endYear = holiday["end_year"].toString()
+                val endMonth = holiday["end_month"] as Long
+                val endMonth1 = if (endMonth.toInt() < 10) "0${endMonth.toInt()}" else (endMonth.toInt()).toString()
+                val endDate = holiday["end_date"] as Long
+                val endDate1 = if (endDate.toInt() < 10) "0${endDate.toInt()}" else (endDate.toInt()).toString()
+                val end = "$endYear$endMonth1$endDate1" // 일정 끝 날짜
+
+                // 클릭된 날짜가 해당 일정의 시작과 종료 날짜 사이에 있는지 확인
+                if(combinedDate.toInt() in start.toInt()..end.toInt()) {
+                    adapter.datas_holidays_title.add(holiday["holiday_title"].toString())
+                    adapter.datas_holidays_start_year.add(holiday["start_year"].toString())
+                    adapter.datas_holidays_start_month.add(holiday["start_month"].toString())
+                    adapter.datas_holidays_start_date.add(holiday["start_date"].toString())
+                    adapter.datas_holidays_end_year.add(holiday["end_year"].toString())
+                    adapter.datas_holidays_end_month.add(holiday["end_month"].toString())
+                    adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
+                    adapter.datas_categories.add(holiday["category"].toString())
+                }
+            }
+
+            binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
+            binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
+        }
+
+        binding.fab.setOnClickListener{ // +버튼 누르면 일정 추가!
+            val intent = Intent(context, AddActivity::class.java)
+            intent.putExtra("selectedYear", year)
+            intent.putExtra("selectedMonth", month)
+            intent.putExtra("selectedDay", day)
+            startActivity(intent)
+        }
+    }
+
+    class EventDecorator(       // dot찍는 데코레이터
+        private val dates: HashSet<CalendarDay>,
+        private val context: Context
+    ) : DayViewDecorator {
 
         override fun shouldDecorate(day: CalendarDay?): Boolean {
             return dates.contains(day)
         }
 
         override fun decorate(view: DayViewFacade?) {
-            view?.addSpan(DotSpan(10F, Color.parseColor("#1D872A")))
+            val color = ContextCompat.getColor(context, R.color.purple_dot)
+            view?.addSpan(DotSpan(8f, color))
         }
     }
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getDatesInRange(startDate: CalendarDay, endDate: CalendarDay): List<CalendarDay> {
+    fun getDatesInRange(startDate: CalendarDay, endDate: CalendarDay): List<CalendarDay> {  // 사이의 날들 계산
         val datesInRange = mutableListOf<CalendarDay>()
+
         var currentDate = LocalDate.of(startDate.year, startDate.month, startDate.day)
-        //val endLocalDate = LocalDate.of(endDate.year, endDate.month - 1, endDate.day)
+
         while (!currentDate.isAfter(LocalDate.of(endDate.year, endDate.month, endDate.day))) {
-            datesInRange.add(CalendarDay.from(currentDate.year, currentDate.monthValue - 1, currentDate.dayOfMonth))
+            datesInRange.add(CalendarDay.from(currentDate.year, currentDate.monthValue, currentDate.dayOfMonth))
             currentDate = currentDate.plusDays(1)
         }
+
         return datesInRange
     }
 
@@ -223,17 +249,17 @@ class CalendarFragment : Fragment() {
         }
 
         override fun decorate(view: DayViewFacade?) {
-            view?.addSpan(StyleSpan(Typeface.NORMAL))
-            view?.addSpan(RelativeSizeSpan(1.0f))
+            view?.addSpan(StyleSpan(Typeface.BOLD))
+            view?.addSpan(RelativeSizeSpan(1.3f))
         }
     }
 
-    class SatDecorator : DayViewDecorator {
+    class SatDecorator : DayViewDecorator { // 토요일 파란색
         override fun shouldDecorate(day: CalendarDay?): Boolean {
             return day?.day?.let { dayOfMonth ->
                 val calendar = Calendar.getInstance().apply {
                     set(Calendar.YEAR, day.year)
-                    set(Calendar.MONTH, day.month - 1) // Calendar.MONTH는 0부터 시작하므로 1을 빼줍니다.
+                    set(Calendar.MONTH, day.month - 1) // Calendar.MONTH는 0부터 시작하므로 1을 빼기
                     set(Calendar.DAY_OF_MONTH, dayOfMonth)
                 }
                 val weekDay = calendar.get(Calendar.DAY_OF_WEEK)
@@ -246,7 +272,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    class SunDecorator : DayViewDecorator {
+    class SunDecorator : DayViewDecorator { // 일요일 빨간색
         override fun shouldDecorate(day: CalendarDay?): Boolean {
             return day?.day?.let { dayOfMonth ->
                 val calendar = Calendar.getInstance().apply {

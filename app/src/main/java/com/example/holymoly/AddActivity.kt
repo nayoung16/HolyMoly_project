@@ -26,6 +26,7 @@ class AddActivity : AppCompatActivity() {
         val sharedPreference = getSharedPreferences("AddActivity", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreference.edit()
 
+        // calendarfragment에서 넘어온 값
         val selectedYear = intent.getIntExtra("selectedYear", 0)
         val selectedMonth = intent.getIntExtra("selectedMonth", 0)
         val selectedDay = intent.getIntExtra("selectedDay", 0)
@@ -38,7 +39,7 @@ class AddActivity : AppCompatActivity() {
         var day = 0
         var year = 0
 
-        binding.choosedate.setOnClickListener() {
+        binding.choosedate.setOnClickListener() {   // 일정이 끝나는 날 설정하기
             val calendarConstraintBuilder = CalendarConstraints.Builder()
 
             val builder = MaterialDatePicker.Builder.datePicker().setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -52,7 +53,7 @@ class AddActivity : AppCompatActivity() {
 
             val datePicker = builder.build()
 
-            datePicker.addOnPositiveButtonClickListener {
+            datePicker.addOnPositiveButtonClickListener {   // 데이트피커에서 날짜를 고르고 ok누르면
                 val calendar = Calendar.getInstance()
                 calendar.time = Date(it)
                 val calendarMilli = calendar.timeInMillis
@@ -70,7 +71,7 @@ class AddActivity : AppCompatActivity() {
 
         var flag = 0
         var isBase = true // 초기상태
-        binding.flight.setOnClickListener(){
+        binding.flight.setOnClickListener(){    // 비행기
             flag = if(isBase) {
                 1
             } else {
@@ -85,7 +86,7 @@ class AddActivity : AppCompatActivity() {
             isBase = !isBase
         }
 
-        binding.movie.setOnClickListener(){
+        binding.movie.setOnClickListener(){ // 영화
             flag = if(isBase) {
                 2
             } else {
@@ -100,7 +101,7 @@ class AddActivity : AppCompatActivity() {
             isBase = !isBase
         }
 
-        binding.book.setOnClickListener(){
+        binding.book.setOnClickListener(){  // 책
             flag = if(isBase) {
                 3
             } else {
