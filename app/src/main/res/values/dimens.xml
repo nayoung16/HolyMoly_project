@@ -5,4 +5,11 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="initial_height">100dp</dimen>
+    <dimen name="scrolled_layout_height">50dp</dimen>
+    <dimen name="origin_layout_height">200dp</dimen>
+    <dimen name="circle_width">50dp</dimen>
+    <dimen name="circle_height">50dp</dimen>
+    <dimen name="origin_circle_width">250dp</dimen>
+    <dimen name="origin_circle_height">250dp</dimen>
 </resources>

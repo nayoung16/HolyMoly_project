@@ -4,11 +4,16 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.R
 import com.example.holymoly.databinding.ItemScheduleBinding
 
+
+
 class MyViewHolder3(val binding: ItemScheduleBinding) : RecyclerView.ViewHolder(binding.root)
 
+//firestore
+private val firestoreHelper = FirestoreHelper()
 class UpcomingSchedulesAdapter(
     val datas_holidays_title: MutableList<String>, val datas_holidays_start_year: MutableList<String>,
     val datas_holidays_start_month: MutableList<String>,val datas_holidays_start_date: MutableList<String>,
@@ -46,10 +51,12 @@ class UpcomingSchedulesAdapter(
             val alertDialogBuilder = AlertDialog.Builder(holder.itemView.context)
             alertDialogBuilder.setMessage("해당 일정을 삭제하시겠습니까?")
             alertDialogBuilder.setPositiveButton("삭제") { dialog, which ->
-                // db에서 일정 삭제!
+
                 val delete_title = datas_holidays_title[position]
-                // 삭제 후 다이얼로그 닫기
+                // 여기서 삭제
+                firestoreHelper.deleteHolidaysFromFirestore(delete_title)
                 dialog.dismiss()
+
             }
             alertDialogBuilder.setNegativeButton("취소") { dialog, which ->
                 dialog.dismiss()
@@ -63,4 +70,5 @@ class UpcomingSchedulesAdapter(
     override fun getItemCount(): Int {
         return datas_holidays_title.size
     }
+
 }

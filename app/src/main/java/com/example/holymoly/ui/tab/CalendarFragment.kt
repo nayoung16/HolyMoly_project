@@ -26,12 +26,10 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import java.util.Calendar
 
 class CalendarFragment : Fragment() {
@@ -77,41 +75,47 @@ class CalendarFragment : Fragment() {
         var c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
         var holidayList : List<Map<String, Any>>? = null
 
-        lifecycleScope.launch {
-            try {
-                holidayList = withContext(Dispatchers.IO) {
-                    firestoreHelper.getMonthHolidaysFromFirestore(c_month)
-                }
-                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
-                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
-                var dates4 = mutableListOf<CalendarDay>()
-                if (holidayList != null) {
-                    for (holiday in holidayList!!) {
-                        val year4 = holiday["start_year"].toString().toInt()
-
-                        val month4 = holiday["start_month"].toString().toInt() + 1
-                        val day4 = holiday["start_date"].toString().toInt()
-
-                        val year5 = holiday["end_year"].toString().toInt()
-                        val month5 = holiday["end_month"].toString().toInt() + 1
-                        val day5 = holiday["end_date"].toString().toInt()
-
-                        val startCalendarDay = CalendarDay.from(year4, month4, day4)
-                        val endCalendarDay = CalendarDay.from(year5, month5, day5)
-
-                        val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
-                        dates4.addAll(daysInRange)
-                        val decorator = EventDecorator(HashSet(dates4))
-                        binding.calendarview.addDecorator(decorator)
+        //데이터 읽어오고 ui 설정하는 함수
+        fun readDataAndSetUI(year: Int, month: Int) {
+            lifecycleScope.launch {
+                try {
+                    holidayList = withContext(Dispatchers.IO) {
+                        firestoreHelper.getMonthHolidaysFromFirestore(c_month)
                     }
+                    // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                    // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+                    var dates4 = mutableListOf<CalendarDay>()
+                    if (holidayList != null) {
+                        for (holiday in holidayList!!) {
+                            val year4 = holiday["start_year"].toString().toInt()
+
+                            val month4 = holiday["start_month"].toString().toInt() + 1
+                            val day4 = holiday["start_date"].toString().toInt()
+
+                            val year5 = holiday["end_year"].toString().toInt()
+                            val month5 = holiday["end_month"].toString().toInt() + 1
+                            val day5 = holiday["end_date"].toString().toInt()
+
+                            val startCalendarDay = CalendarDay.from(year4, month4, day4)
+                            val endCalendarDay = CalendarDay.from(year5, month5, day5)
+
+                            val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
+                            dates4.addAll(daysInRange)
+                            val decorator = EventDecorator(HashSet(dates4))
+                            binding.calendarview.addDecorator(decorator)
+                        }
+                    }
+
+
+                } catch (e: Exception) {
+                    // 예외 처리
+                    Log.e(ContentValues.TAG, "Error fetching holidays: $e")
                 }
-
-
-            } catch (e: Exception) {
-                // 예외 처리
-                Log.e(ContentValues.TAG, "Error fetching holidays: $e")
             }
         }
+
+        readDataAndSetUI(c_year, c_month)
+
 
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
             val year = date.year
@@ -184,41 +188,7 @@ class CalendarFragment : Fragment() {
             c_year = date.year // 현재 연도
             c_month = date.month // 현재 월
 
-            lifecycleScope.launch {
-
-                try {
-
-                    holidayList = firestoreHelper.getMonthHolidaysFromFirestore(c_month)
-                    // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
-                    // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
-
-                    var dates3 = mutableListOf<CalendarDay>()
-                    if (holidayList != null) {
-                        for (holiday in holidayList!!) {
-                            val year4 = holiday["start_year"].toString().toInt()
-                            val month4 = holiday["start_month"].toString().toInt() + 1
-                            val day4 = holiday["start_date"].toString().toInt()
-
-                            val year5 = holiday["end_year"].toString().toInt()
-                            val month5 = holiday["end_month"].toString().toInt() + 1
-                            val day5 = holiday["end_date"].toString().toInt()
-
-                            val startCalendarDay = CalendarDay.from(year4, month4, day4)
-                            val endCalendarDay = CalendarDay.from(year5, month5, day5)
-
-
-                            val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
-                            dates3.addAll(daysInRange)
-                            val decorator = EventDecorator(HashSet(dates3))
-                            binding.calendarview.addDecorator(decorator)
-                        }
-                    }
-
-                } catch (e: Exception) {
-                    // 예외 처리
-                    Log.e(ContentValues.TAG, "Error fetching holidays: $e")
-                }
-            }
+            readDataAndSetUI(c_year, c_month)
         }
     }
 

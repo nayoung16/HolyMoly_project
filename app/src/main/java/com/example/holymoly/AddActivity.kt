@@ -40,7 +40,6 @@ class AddActivity : AppCompatActivity() {
 
         binding.choosedate.setOnClickListener() {
             val calendarConstraintBuilder = CalendarConstraints.Builder()
-            //calendarConstraintBuilder.setValidator(DateValidatorPointForward.now())
 
             val builder = MaterialDatePicker.Builder.datePicker().setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .setCalendarConstraints(calendarConstraintBuilder.build());
