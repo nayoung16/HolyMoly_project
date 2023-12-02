@@ -1,4 +1,5 @@
 <resources>
+    <string name="default_web_client_id">AIzaSyAVWzjJaQ1NqUZPAyaCLO679yOT_G9CDsw</string>
     <string name="app_name">Holy Moly</string>
     <string name="app_name_upper">HOLY MOLY</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -83,4 +84,13 @@
     <string name="md_hobby_7">#음악</string>
     <string name="md_hobby_8">#퍼즐</string>
     <string name="md_hobby_9">#요가</string>
+
+    <string name="popup_movie1_title">포레스트 검프</string>
+    <string name="popup_movie2_title">트루먼 쇼</string>
+
+    <string name="popup_movie1_script">포레스트 검프</string>
+    <string name="popup_movie2_script">트루먼 쇼</string>
+
+    <string name="flight_search">최저가 검색</string>
+    <string name="flight_store">검색 내역 저장</string>
 </resources>

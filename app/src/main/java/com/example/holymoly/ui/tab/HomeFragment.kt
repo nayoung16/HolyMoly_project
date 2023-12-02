@@ -75,7 +75,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             }
             else{  //다른 년도일 경우
                 binding.holydaysOfMonthText.text = year + "년도 첫 공휴일"
-                binding.restOfYear.text = holy.totalHolyOfYear().toString() + "일"
+                binding.restOfYear.text = holy.totalHolyOfYear().toString()
                 holidayDatas = holy.FirstHolyListOfMonth()
                 datas_each_month_holidays = holy.totalHolyOfMonth()}
             
