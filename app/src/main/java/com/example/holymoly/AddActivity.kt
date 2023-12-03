@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.holymoly.databinding.ActivityAddBinding
@@ -12,10 +13,11 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
 import java.util.Date
 
-class AddActivity : AppCompatActivity() {
+class AddActivity : AppCompatActivity(){
     lateinit var binding: ActivityAddBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
+    private val viewModel: DBViewModel by viewModels()
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,7 +137,11 @@ class AddActivity : AppCompatActivity() {
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
 
+            // ViewModel에 값을 설정
+            viewModel.updateFlagDB(1)
             finish()
         }
     }
+
+
 }
