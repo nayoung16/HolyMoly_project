@@ -80,54 +80,12 @@ class CalendarFragment : Fragment() {
         var c_day = CalendarDay.today().day // 캘린더 화면으로 넘어왔을 때의 일
 
 
-
         binding.clickdate.text = "${c_year}년 ${c_month}월 ${c_day}일"     // 캘린더 화면으로 넘어왔을 때의 날짜를 띄워줌
 
-
-        //데이터 읽어오고 ui 설정하는 함수
-        fun readDataAndSetUI(year: Int, month: Int) {
-            lifecycleScope.launch {
-                try {
-                    holidayList = withContext(Dispatchers.IO) {
-                        firestoreHelper.getMonthHolidaysFromFirestore(c_month)
-                    }
-                    // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
-                    // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
-                    var dates4 = mutableListOf<CalendarDay>()
-                    if (holidayList != null) {
-                        for (holiday in holidayList!!) {
-                            val year4 = holiday["start_year"].toString().toInt()
-
-                            val month4 = holiday["start_month"].toString().toInt() + 1
-                            val day4 = holiday["start_date"].toString().toInt()
-
-                            val year5 = holiday["end_year"].toString().toInt()
-                            val month5 = holiday["end_month"].toString().toInt() + 1
-                            val day5 = holiday["end_date"].toString().toInt()
-
-                            val startCalendarDay = CalendarDay.from(year4, month4, day4)
-                            val endCalendarDay = CalendarDay.from(year5, month5, day5)
-
-                            val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
-                            dates4.addAll(daysInRange)
-                            val decorator = EventDecorator(HashSet(dates4))
-                            binding.calendarview.addDecorator(decorator)
-                        }
-                    }
-
-
-                } catch (e: Exception) {
-                    // 예외 처리
-                    Log.e(ContentValues.TAG, "Error fetching holidays: $e")
-                }
-            }
-        }
-
-        readDataAndSetUI(c_year, c_month)
-
+        calldatabase(c_month)   // 정보 불러오기
 
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
-            dateSelection(date)
+            dateselection(date)
         }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
@@ -145,12 +103,51 @@ class CalendarFragment : Fragment() {
             c_year = date.year // 현재 연도
             c_month = date.month // 현재 월
 
-            readDataAndSetUI(c_year, c_month)
+            calldatabase(c_month)
+        }
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun calldatabase(c_month: Int) {
+        //데이터 읽어오고 ui 설정하는 함수
+        lifecycleScope.launch {
+            try {
+                holidayList = withContext(Dispatchers.IO) {
+                    firestoreHelper.getMonthHolidaysFromFirestore(c_month)
+                }
+                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
+                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
+                var dates4 = mutableListOf<CalendarDay>()
+                if (holidayList != null) {
+                    for (holiday in holidayList!!) {
+                        val year4 = holiday["start_year"].toString().toInt()
+                        val month4 = holiday["start_month"].toString().toInt()
+                        val day4 = holiday["start_date"].toString().toInt()
+
+                        val year5 = holiday["end_year"].toString().toInt()
+                        val month5 = holiday["end_month"].toString().toInt()
+                        val day5 = holiday["end_date"].toString().toInt()
+
+                        val startCalendarDay = CalendarDay.from(year4, month4, day4)
+                        val endCalendarDay = CalendarDay.from(year5, month5, day5)
+
+                        val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
+                        dates4.addAll(daysInRange)
+                        val decorator = EventDecorator(HashSet(dates4), requireContext())
+                        binding.calendarview.addDecorator(decorator)
+                    }
+                }
+
+
+            } catch (e: Exception) {
+                // 예외 처리
+                Log.e(ContentValues.TAG, "Error fetching holidays: $e")
+            }
         }
     }
 
-    fun dateSelection(date: CalendarDay) {  // 날짜 선택
+    fun dateselection(date: CalendarDay) {
         val year = date.year
         val month = date.month
         val day = date.day
