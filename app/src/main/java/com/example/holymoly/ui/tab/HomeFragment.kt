@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.HolyDay
+import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,6 +28,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
 
     private val currentYear = LocalDate.now().year
     private var isScrolledDown = false // 스크롤 여부를 추적하는 변수
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -42,13 +45,9 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         val yearAdapter = SolyearAdapter(requireContext(), binding.solyearSpinner, yearList)
         yearAdapter.setOnYearItemSelectedListener(this)
 
-        val yearAdapter2 = SolyearAdapter(requireContext(), binding.solyearSpinner2, yearList)
-        yearAdapter.setOnYearItemSelectedListener(this)
-
         val scrollView : NestedScrollView = binding.scrollView
         val firstLayout : LinearLayout = binding.firstLayout
         val secondLayout : LinearLayout = binding.secondLayout
-
         scrollView.viewTreeObserver.addOnScrollChangedListener {
             if (scrollView.scrollY > 0) {
                 // 스크롤이 발생하면 두 번째 레이아웃을 보이도록 설정
@@ -60,6 +59,9 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 secondLayout.visibility = View.GONE
             }
         }
+
+
+
 
         return binding.root
     }
@@ -92,6 +94,8 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             if(year == currentYear.toString()) { //올해일 경우
                 //올해 남은 공휴일 수
                 binding.restOfYear.text = holy.restHolyOfYear().toString()
+                binding.restOfYear2.text = holy.restHolyOfYear().toString()
+                binding.thisYear.text = currentYear.toString()
                 //이 달의 공휴일
                 binding.holydaysOfMonthText.text = "이 달의 공휴일"
                 holidayDatas = holy.HolyListOfMonth()
@@ -100,6 +104,8 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             else{  //다른 년도일 경우
                 binding.holydaysOfMonthText.text = year + "년도 첫 공휴일"
                 binding.restOfYear.text = holy.totalHolyOfYear().toString()
+                binding.restOfYear2.text = holy.totalHolyOfYear().toString()
+                binding.thisYear.text = year
                 holidayDatas = holy.FirstHolyListOfMonth()
                 datas_each_month_holidays = holy.totalHolyOfMonth()
             }
@@ -118,7 +124,25 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
                 binding.holydaysOfMonthLayout.layoutManager = LinearLayoutManager(requireContext())
             }
             //각 달의 공휴일 리사이클러 뷰
-            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(datas_each_month, datas_each_month_holidays, year)
+            //각 달의 공휴일 리사이클러 뷰
+            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(
+                datas_each_month, datas_each_month_holidays, year,
+                onItemClickListener = { selectedYear, selectedMonth ->
+
+                    val bundle = Bundle().apply {
+                        putString("selectedYear", selectedYear)
+                        putInt("selectedMonth", selectedMonth)
+                    }
+
+                    val fragment = CalendarFragment()
+                    fragment.arguments = bundle
+
+                    val transaction = (requireActivity() as AppCompatActivity).supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.calendarpage, fragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+                }
+            )
             binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
     }}
 

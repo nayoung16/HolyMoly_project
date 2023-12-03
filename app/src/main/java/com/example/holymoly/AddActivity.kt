@@ -3,25 +3,65 @@ package com.example.holymoly
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
+import android.widget.CheckBox
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.holymoly.databinding.ActivityAddBinding
+import com.example.holymoly.ui.FlightIconUpdateListener
+import com.example.holymoly.ui.tab.CalendarFragment
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
 import java.util.Date
 
-class AddActivity : AppCompatActivity() {
+class AddActivity : AppCompatActivity(){
     lateinit var binding: ActivityAddBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
+
+    private val viewModel: DBViewModel by viewModels()
+    private lateinit var broadcastManager: LocalBroadcastManager
+
+    private var flightIconUpdateListener: FlightIconUpdateListener? = null
+
+    // MainActivity에서 호출될 FlightIconUpdateListener 설정하는 메서드
+    fun setFlightIconUpdateListener(listener: FlightIconUpdateListener) {
+        flightIconUpdateListener = listener
+    }
+
+    // 예를 들어, Flight 버튼이 클릭되면 MainActivity에 있는 onUpdateFlightIcon 호출
+    private fun onFlightButtonClick() {
+        // Flight 버튼 클릭되면 이미지를 변경하고 MainActivity로 변경된 이미지 전달
+        val newFlightIcon = R.drawable.ic_book // 새로운 아이콘 이미지
+        flightIconUpdateListener?.onUpdateFlightIcon(newFlightIcon)
+    }
+
+    // 알림 시간 설정
+    val checkboxList = listOf<String>("3일 전", "1일 전", "1시간 전", "30분 전")
+    var selectedOption: String = ""
+
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide();
+
+
+        binding.alarm.setOnClickListener{   // 알림 설정
+            showCheckboxDialog()
+        }
+
+        broadcastManager = LocalBroadcastManager.getInstance(this)
 
         val sharedPreference = getSharedPreferences("AddActivity", Context.MODE_PRIVATE)
         val editor: SharedPreferences.Editor = sharedPreference.edit()
@@ -82,8 +122,11 @@ class AddActivity : AppCompatActivity() {
             } else {
                 ContextCompat.getColor(this, R.color.btn_base)
             }
+
             binding.flight.setBackgroundColor(color)
             isBase = !isBase
+
+            onFlightButtonClick()
         }
 
         binding.movie.setOnClickListener(){ // 영화
@@ -135,7 +178,43 @@ class AddActivity : AppCompatActivity() {
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
 
+            // ViewModel에 값을 설정
+            viewModel.updateFlagDB(1)
             finish()
+
+            if(flag == 1) {
+                Toast.makeText(this, "항공권을 예약하러 가보세요!", Toast.LENGTH_LONG).show()
+            }
+
         }
     }
+
+    fun  showCheckboxDialog() { // 체크박스 보여지기
+        val options = checkboxList.toTypedArray()
+        val checkedItems = BooleanArray(checkboxList.size) { false }
+
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle("원하는 알림 시간을 설정해주세요!")
+        dialogBuilder.setMultiChoiceItems(options, checkedItems) { _, which, isChecked ->
+            checkedItems[which] = isChecked
+        }
+        dialogBuilder.setPositiveButton("OK") { _, _ ->
+            val selectedOptions = ArrayList<String>()
+            for (i in checkedItems.indices) {
+                if (checkedItems[i]) {
+                    selectedOptions.add(checkboxList[i])
+                }
+            }
+            selectedOption = selectedOptions.joinToString(", ")
+            binding.alarm.text = selectedOption // alarm 텍스트뷰에 선택된 옵션 표시
+        }
+        dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
+
 }
