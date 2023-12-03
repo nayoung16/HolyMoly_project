@@ -96,4 +96,7 @@
 
     <string name="flight_search">최저가 검색</string>
     <string name="flight_store">검색 내역 저장</string>
+
+    <string name="flight_type_inter">international</string>
+    <string name="flight_type_dom">domestic</string>
 </resources>

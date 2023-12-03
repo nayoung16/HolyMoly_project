@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <WebView
+        android:id="@+id/flighty_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/flighty_back_btn"
+        android:layout_width="@dimen/circle_width"
+        android:layout_height="@dimen/circle_width"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#74A1FB"
+        android:src="@android:drawable/ic_menu_revert"
+        app:fabCustomSize="@dimen/circle_width" />
+
+</RelativeLayout>
