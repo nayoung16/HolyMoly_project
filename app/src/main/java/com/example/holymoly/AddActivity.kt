@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.viewModels
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
@@ -21,10 +22,12 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
 import java.util.Date
 
-class AddActivity : AppCompatActivity() {
+class AddActivity : AppCompatActivity(){
     lateinit var binding: ActivityAddBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
+
+    private val viewModel: DBViewModel by viewModels()
     private lateinit var broadcastManager: LocalBroadcastManager
 
     private var flightIconUpdateListener: FlightIconUpdateListener? = null
@@ -175,6 +178,8 @@ class AddActivity : AppCompatActivity() {
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
 
+            // ViewModel에 값을 설정
+            viewModel.updateFlagDB(1)
             finish()
 
             if(flag == 1) {
@@ -210,4 +215,6 @@ class AddActivity : AppCompatActivity() {
         val dialog = dialogBuilder.create()
         dialog.show()
     }
+
+
 }
