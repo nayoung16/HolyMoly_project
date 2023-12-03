@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -26,6 +27,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.holymoly.databinding.ActivityMainBinding
+import com.example.holymoly.ui.FlightIconUpdateListener
 import com.example.holymoly.ui.tab.BucketListFragment
 import com.example.holymoly.ui.tab.CalendarFragment
 import com.example.holymoly.ui.tab.FlightFragment
@@ -36,7 +38,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -45,8 +46,12 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
+
+var tabIconList = mutableListOf<Int>()
+var tabTitles = listOf<String>()
+
 @RequiresApi(Build.VERSION_CODES.O)
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), FlightIconUpdateListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
@@ -61,6 +66,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val addActivity = AddActivity()
+        addActivity.setFlightIconUpdateListener(this)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -125,8 +133,8 @@ class MainActivity : AppCompatActivity() {
         binding.pager.adapter = MyPagerAdapter(this)
 
         //tab title, icon 설정
-        val tabTitles = listOf("MD's Pick", "Bucket List", "Home", "Calendar", "Flight")
-        val tabIconList = listOf(
+        tabTitles = listOf("MD's Pick", "Bucket List", "Home", "Calendar", "Flight")
+        tabIconList = mutableListOf(
             R.drawable.ic_tablayout_mdpick,
             R.drawable.ic_tablayout_bucketlist,
             R.drawable.ic_tablayout_home,
@@ -138,6 +146,7 @@ class MainActivity : AppCompatActivity() {
             tab.text = tabTitles[position]
             tab.setIcon(tabIconList[position])
         }.attach()
+
 
 
         // tabLayout과 viewpager 연결
@@ -255,6 +264,30 @@ class MainActivity : AppCompatActivity() {
             true
         }
     }
+
+    override fun onUpdateFlightIcon(newFlightIcon: Int) {   // flight update
+        if (newFlightIcon != 0) {
+            // 탭 레이아웃의 아이콘 변경
+            //tabIconList[4] = newFlightIcon
+            //binding.tabLayout.getTabAt(4)?.setIcon(newFlightIcon)
+            tabTitles = listOf("MD's Pick", "Bucket List", "Home", "Calendar", "Flight")
+            tabIconList = mutableListOf(
+                R.drawable.ic_tablayout_mdpick,
+                R.drawable.ic_tablayout_bucketlist,
+                R.drawable.ic_tablayout_home,
+                R.drawable.ic_tablayout_calendar,
+                R.drawable.ic_book
+            )
+
+            Log.d("jy", "djskdk")
+
+            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+                tab.text = tabTitles[position]
+                tab.setIcon(tabIconList[position])
+            }.attach()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
@@ -275,3 +308,4 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_SELECTED_PAGE = "selected_page"
     }
 }
+
