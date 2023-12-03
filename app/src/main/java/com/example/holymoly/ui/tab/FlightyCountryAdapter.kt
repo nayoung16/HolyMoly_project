@@ -8,7 +8,7 @@ import android.widget.Spinner
 import com.example.holymoly.R
 
 interface OnCountryItemSelectedListener {
-    fun onCountryItemSelected(CountryItem : String)
+    fun onCountryItemSelected(CountryItem : String, spinner: Spinner)
 }
 
 class FlightyCountryAdapter(private val context: Context, private val spinner: Spinner, private val countries: List<String>) {
@@ -34,7 +34,7 @@ class FlightyCountryAdapter(private val context: Context, private val spinner: S
                 id: Long
             ) {
                 val selectedCountry = countries[position]
-                listener?.onCountryItemSelected(selectedCountry)
+                listener?.onCountryItemSelected(selectedCountry, spinner)
             }
         }
     }
