@@ -1,6 +1,9 @@
 package com.example.holymoly
 
 import android.util.Log
+import com.example.holymoly.ui.drawer.TicketAdapter
+import com.example.holymoly.ui.drawer.TicketInform
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +23,74 @@ class FirestoreHelper {
             .set(data)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
+    }
+
+
+    fun storeTicketToFireStore(time: String, departCountry: String, arriveCountry : String, departDate : String, arriveDate:String){
+        //국제선 or 국내선
+        val domList = setOf("CJU", "PUS", "TAE", "ICN", "GMP", "RSU", "USN")
+        val type : String = if(arriveCountry in domList && departCountry in domList) "domestic" else  "international"
+
+        //필드 생성
+        val data = hashMapOf(
+            "time" to time,
+            "type" to type,
+            "departCountry" to departCountry,
+            "arriveCountry" to arriveCountry,
+            "departDate" to departDate,
+            "arriveDate" to arriveDate )
+
+        //문서 생성
+        db.collection("user").document(userEmail!!)
+            .collection("myFlight").document(time).set(data)
+            .addOnSuccessListener { Log.d("DB", "$time/$type/$departCountry/$departDate") }
+            .addOnFailureListener{ Log.d("DB", "Fail") }
+    }
+
+    fun getTicketFromFireStore(adapter: TicketAdapter):List<TicketInform>{
+        var informs : MutableList<TicketInform> = mutableListOf()
+
+        db.collection("user").document(userEmail!!)
+            .collection("myFlight")
+            .addSnapshotListener{ qsnap, e ->
+                informs.clear()
+                for(doc in qsnap!!.documents){
+                    val time = doc["time"].toString()
+                    val type = doc["type"].toString()
+                    val departDate = doc["departDate"].toString()
+                    val arriveDate = doc["arriveDate"].toString()
+                    val departCountry = doc["departCountry"].toString()
+                    val arriveCountry = doc["arriveCountry"].toString()
+                    informs.add(TicketInform(time, type, departDate, arriveDate, departCountry, arriveCountry))
+                }
+                adapter.notifyDataSetChanged()
+            }
+
+        return informs
+    }
+
+    fun deleteTicketFromFireStore(items: MutableSet<String>, adapter: TicketAdapter) : String{
+        //함수 실행 결과 메세지
+        var message : String = ""
+
+        //아이템 삭제
+        for(time in items){
+        db.collection("user").document(userEmail!!)
+            .collection("myFlight").document(time)
+            .delete()
+            .addOnSuccessListener { message = "success" }  //성공
+            .addOnFailureListener { e ->
+                message = if(e is FirebaseFirestoreException
+                    && e.code == FirebaseFirestoreException.Code.NOT_FOUND){
+                    "notFound"  //해당 아이템이 존재하지 않음
+                } else{
+                    "error"     //다른 예외
+                }
+            }
+
+        }
+        adapter.notifyDataSetChanged()
+        return message
     }
 
 
