@@ -18,11 +18,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
-import com.example.holymoly.DBViewModel
 import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
@@ -43,7 +41,6 @@ class CalendarFragment : Fragment() {
     private val firestoreHelper = FirestoreHelper()
 
     var holidayList : List<Map<String, Any>>? = null
-    private lateinit var viewModel: DBViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -61,21 +58,6 @@ class CalendarFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(requireActivity()).get(DBViewModel::class.java)
-
-        viewModel.flagDB.observe(
-            viewLifecycleOwner,
-        ) { newFlag ->
-            Log.d("ny", "in calendar FlagDB updated: $newFlag")
-            if (newFlag == 1) {
-                // Flag 값이 1로 업데이트되었을 때 calldatabase 함수 호출
-                val currentMonth = CalendarDay.today().month
-                calldatabase(currentMonth)
-                // Flag 값을 원래대로 초기화
-                viewModel.updateFlagDB(0)
-            }
-        }
 
         binding.calendarview.apply {
             // 요일 지정
