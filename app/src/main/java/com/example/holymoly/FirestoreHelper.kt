@@ -136,9 +136,6 @@ class FirestoreHelper {
                     .get()
                     .await()
 
-                Log.d("ny", "Number of documents: ${documents_start.size()}")
-                Log.d("ny", "Number of documents: ${documents_end.size()}")
-
                 val holidayList = mutableListOf<Map<String, Any>>()
 
                 for (document in documents_start) {
@@ -164,6 +161,64 @@ class FirestoreHelper {
             }
         }
     }
+/*
+    suspend fun getMonthHolidaysFromFirestore2(this_month:Int, adapter: UpcomingSchedulesAdapter): List<Map<String, Any>> {
+        return withContext(Dispatchers.IO) {
+            try {
+                var documents_start: MutableList<DocumentSnapshot> = mutableListOf()
+                db.collection("user")
+                    .document(userEmail!!)
+                    .collection("holiday").addSnapshotListener{ snap, e ->
+                        documents_start.clear()
+                        for(doc in snap!!.documents){
+                            if(doc["start_month"] == this_month)
+                                documents_start.add(doc)
+                        }
+                        adapter.notifyDataSetChanged()
+                    }
+                /*.whereEqualTo("start_month", this_month)
+                .get()
+                .await()*/
+
+                /*val documents_end = db.collection("user")
+                    .document(userEmail!!)
+                    .collection("holiday")
+                    .whereEqualTo("end_month", this_month)
+                    .get()
+                    .await()*/
+
+                //Log.d("ny", "Number of documents: ${documents_start.size()}")
+                //Log.d("ny", "Number of documents: ${documents_end.size()}")
+
+                val holidayList = mutableListOf<Map<String, Any>>()
+
+                for (document in documents_start) {
+                    // 각 문서에 대한 처리
+                    val data = document.data
+                    // data를 사용하여 필요한 작업 수행
+                    if (data != null) {
+                        holidayList.add(data)
+                    }
+                }
+
+                /*for (document in documents_end) {
+                    // 각 문서에 대한 처리
+                    val data = document.data
+                    // data를 사용하여 필요한 작업 수행
+                    if (!holidayList.contains(data)) {
+                        holidayList.add(data)
+                    }
+                }*/
+                return@withContext holidayList
+            } catch (exception: Exception) {
+                // 쿼리 실패 시 처리
+                Log.w(TAG, "Error getting documents: ", exception)
+                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
+            }
+        }
+    }
+
+ */
 
     suspend fun getAllHolidaysFromFirestore(): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
