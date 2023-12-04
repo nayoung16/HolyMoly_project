@@ -1,19 +1,20 @@
 package com.example.holymoly.ui.tab
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.HolyDay
-import com.example.holymoly.R
+import com.example.holymoly.MonthHolidayActivity
 import com.example.holymoly.databinding.FragmentHomeBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -45,6 +46,8 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         val yearAdapter = SolyearAdapter(requireContext(), binding.solyearSpinner, yearList)
         yearAdapter.setOnYearItemSelectedListener(this)
 
+
+
         val scrollView : NestedScrollView = binding.scrollView
         val firstLayout : LinearLayout = binding.firstLayout
         val secondLayout : LinearLayout = binding.secondLayout
@@ -61,10 +64,9 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
         }
 
 
-
-
         return binding.root
     }
+
 
     //년도 list
     private fun setYearList(): List<String>{
@@ -90,6 +92,7 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             val datas_each_month_holidays : List<Int>
             val datas_each_month = mutableListOf<String>("Jan","Feb","March","April","May","June","July",
                 "Aug","Sep","Oct","Nov","Dec")
+
 
             if(year == currentYear.toString()) { //올해일 경우
                 //올해 남은 공휴일 수
@@ -125,25 +128,20 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             }
             //각 달의 공휴일 리사이클러 뷰
             //각 달의 공휴일 리사이클러 뷰
-            binding.holidaysOfEachMonthLayout.adapter = HolidayEachMonthAdapter(
+            val eachMonthAdapter = HolidayEachMonthAdapter(
                 datas_each_month, datas_each_month_holidays, year,
-                onItemClickListener = { selectedYear, selectedMonth ->
-
-                    val bundle = Bundle().apply {
-                        putString("selectedYear", selectedYear)
-                        putInt("selectedMonth", selectedMonth)
-                    }
-
-                    val fragment = CalendarFragment()
-                    fragment.arguments = bundle
-
-                    val transaction = (requireActivity() as AppCompatActivity).supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.calendarpage, fragment)
-                    transaction.addToBackStack(null)
-                    transaction.commit()
-                }
             )
+            binding.holidaysOfEachMonthLayout.adapter = eachMonthAdapter
             binding.holidaysOfEachMonthLayout.layoutManager = GridLayoutManager(activity,2)
+
+            eachMonthAdapter.MonthClick(object : OnMonthClickedListener{
+                override fun onItemClicked(selectedYear: String, selectedMonth: Int) {
+                    var intent = Intent(requireContext(), MonthHolidayActivity::class.java)
+                    intent.putExtra("year", selectedYear)
+                    intent.putExtra("month", selectedMonth)
+                    startActivity(intent)
+                }
+            })
     }}
 
     //HolyDay 생성자 패치
@@ -153,5 +151,4 @@ class HomeFragment : Fragment() , OnYearItemSelectedListener{
             HolyDay(year)
         }
     }
-
 }
