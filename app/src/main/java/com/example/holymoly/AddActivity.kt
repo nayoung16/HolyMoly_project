@@ -49,8 +49,7 @@ class AddActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.hide();
-
+        supportActionBar?.hide()
 
         binding.alarm.setOnClickListener{   // 알림 설정
             showCheckboxDialog()
@@ -172,16 +171,17 @@ class AddActivity : AppCompatActivity(){
             var cate = flag
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
+
             finish()
 
             if(flag == 1) {
                 Toast.makeText(this, "항공권을 예약하러 가보세요!", Toast.LENGTH_LONG).show()
             }
-
         }
     }
 
-    fun  showCheckboxDialog() { // 체크박스 보여지기
+    fun  showCheckboxDialog() { // 체크박스
+        // 보여지기
         val options = checkboxList.toTypedArray()
         val checkedItems = BooleanArray(checkboxList.size) { false }
 
