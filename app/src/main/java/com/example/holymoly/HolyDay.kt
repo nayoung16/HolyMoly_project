@@ -53,6 +53,16 @@ class HolyDay(val sol_year : String) : HolyCallback {
         return allData.totalMonth
     }
 
+    //모든 공휴일 날짜 (이름 없음, 1년)
+    fun holyDatesYear():List<String>{
+        return allData.holyDatesYear
+    }
+
+    //이름 포함 월별 모든 공휴일 수 (1년)
+    fun holyDayYear(): Map<Int, List<String>>{
+        return allData.holyDayYear
+    }
+
     //달 마다 남은 공휴일 수 반환
     @RequiresApi(Build.VERSION_CODES.O)
     fun restHolyOfMonth() : List<Int> {
@@ -100,14 +110,13 @@ class HolyDay(val sol_year : String) : HolyCallback {
                     if(day <= start)
                     {
                         var dateList = mutableListOf<String>()
-                        dateList.add(name)
-                        dateList.add(fullStart)
+                        dateList.add(name)  // 공휴일 이름
+                        dateList.add(fullStart) // 시작날
                         dateList.add(fullEnd)
                         holyList.add(dateList)
                     }
                 }
             }}
-        Log.d("Success", holyList.toString())
         return holyList
     }
 
@@ -117,7 +126,8 @@ class HolyDay(val sol_year : String) : HolyCallback {
 //HolyDay 클래스의 필요한 모든 정보 -> 콜백을 통해 값 전달을 위한 목적
 data class AllHolyData(val totalYear : Int, val totalMonth : List<Int>,
                        val holyDayInform : Map<String, HolyDayData>, val holyDayYear : Map<Int, List<String>>,
-                       val restHolyDayYear : Int, val restHolyDayMonth : Int, val observedCount : Int, val temporaryCount : Int)
+                       val restHolyDayYear : Int, val restHolyDayMonth : Int, val observedCount : Int, val temporaryCount : Int,
+                        val holyDatesYear: List<String>)
 
 //특정 공휴일 정보
 data class HolyDayData(val start_date: String, val end_date: String, val total_day: Int)
@@ -126,6 +136,7 @@ data class HolyDayData(val start_date: String, val end_date: String, val total_d
 class NetworkThread3 (private val url: String, private val callback: HolyCallback) : Runnable{
     ///////////필요한 정보////////////
     private var totalYear : Int = 0    //1년 공휴일 수
+    private var holyDatesYear : MutableList<String> = mutableListOf()
     private var totalMonth : MutableList<Int> = mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0)   //월별 공휴일 수
     private var holyDayInform : MutableMap<String, HolyDayData> = mutableMapOf()   //공휴일 정보
     private var holyDayYear : MutableMap<Int, List<String>> = mutableMapOf()        //각 월에 속한 공휴일
@@ -169,6 +180,9 @@ class NetworkThread3 (private val url: String, private val callback: HolyCallbac
                     val name = isSame(element.getElementsByTagName("dateName").item(0).textContent)
                     val start = element.getElementsByTagName("locdate").item(0).textContent
 
+                    //모든 공휴일 날짜 가져오기 without 이름
+                    holyDatesYear.add(start)
+
                     //현재 월 가져오기
                     current_month = convertToInt(start.substring(4,6))
 
@@ -204,7 +218,7 @@ class NetworkThread3 (private val url: String, private val callback: HolyCallbac
             }
 
             //콜백
-            callback.onValueReady(AllHolyData(totalYear, totalMonth, holyDayInform, holyDayYear, restOfHoly(), restOfMonth, observedCount, temporaryCount))
+            callback.onValueReady(AllHolyData(totalYear, totalMonth, holyDayInform, holyDayYear, restOfHoly(), restOfMonth, observedCount, temporaryCount, holyDatesYear))
 
             //공휴일 api 정보 확인하기
             Log.d("Success", totalYear.toString())

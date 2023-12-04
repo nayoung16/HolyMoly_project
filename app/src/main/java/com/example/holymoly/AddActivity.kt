@@ -5,9 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.viewModels
-import android.widget.CheckBox
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -16,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.holymoly.databinding.ActivityAddBinding
 import com.example.holymoly.ui.FlightIconUpdateListener
-import com.example.holymoly.ui.tab.CalendarFragment
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import java.util.Calendar
@@ -27,7 +23,6 @@ class AddActivity : AppCompatActivity(){
     //firestore
     private val firestoreHelper = FirestoreHelper()
 
-    private val viewModel: DBViewModel by viewModels()
     private lateinit var broadcastManager: LocalBroadcastManager
 
     private var flightIconUpdateListener: FlightIconUpdateListener? = null
@@ -54,8 +49,7 @@ class AddActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        supportActionBar?.hide();
-
+        supportActionBar?.hide()
 
         binding.alarm.setOnClickListener{   // 알림 설정
             showCheckboxDialog()
@@ -178,18 +172,16 @@ class AddActivity : AppCompatActivity(){
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
 
-            // ViewModel에 값을 설정
-            viewModel.updateFlagDB(1)
             finish()
 
             if(flag == 1) {
                 Toast.makeText(this, "항공권을 예약하러 가보세요!", Toast.LENGTH_LONG).show()
             }
-
         }
     }
 
-    fun  showCheckboxDialog() { // 체크박스 보여지기
+    fun  showCheckboxDialog() { // 체크박스
+        // 보여지기
         val options = checkboxList.toTypedArray()
         val checkedItems = BooleanArray(checkboxList.size) { false }
 
