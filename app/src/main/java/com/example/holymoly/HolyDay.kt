@@ -120,6 +120,22 @@ class HolyDay(val sol_year : String) : HolyCallback {
         return holyList
     }
 
+    //각 달의 공휴일 (인자 받아와서)
+    fun AllHolyListOfMonth(month : Int): List<List<String>>{
+        var holyList = mutableListOf<List<String>>()
+
+        if(allData.holyDayYear.containsKey(month)){
+            for(name in allData.holyDayYear[month]!!){
+                var dateList= mutableListOf<String>()
+                dateList.add(name)
+                dateList.add(allData.holyDayInform[name]?.start_date?:"")
+                dateList.add(allData.holyDayInform[name]?.end_date?:"")
+                holyList.add(dateList)
+            }
+        }
+
+        return holyList
+    }
 
 }
 
