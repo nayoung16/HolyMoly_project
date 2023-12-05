@@ -1,14 +1,13 @@
 package com.example.holymoly
 
-import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.databinding.ActivityMonthHolidayBinding
-import com.example.holymoly.ui.tab.HolidayOfMonthAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,14 +37,18 @@ class MonthHolidayActivity : AppCompatActivity() {
         GlobalScope.launch(Dispatchers.Main){
             val holy = fetchHolyDay(selectedYear.toString())
 
-            val holidayDatas : List<List<String>> = holy.AllHolyListOfMonth(selectedMonth)
+            var holidayDatas : List<List<String>> = holy.AllHolyListOfMonth(selectedMonth)
 
-            Log.d("ny",holidayDatas.toString())
+            if(holidayDatas.isEmpty()) {
+                Toast.makeText(this@MonthHolidayActivity,"이달은 공휴일이 없어요.. ", Toast.LENGTH_LONG).show()
+            }
+            else {
+                binding.aboutHoliday.adapter = NewMonthHolidayAdapter(holidayDatas)
+                binding.aboutHoliday.layoutManager = LinearLayoutManager(this@MonthHolidayActivity)
+                Toast.makeText(this@MonthHolidayActivity, "캘린더에 일정을 추가하러 가보세요!", Toast.LENGTH_SHORT).show()
+            }
 
-            binding.aboutHoliday.adapter = HolidayOfMonthAdapter(holidayDatas)
-            binding.aboutHoliday.layoutManager = LinearLayoutManager(this@MonthHolidayActivity)
         }
-
     }
 
     private suspend fun fetchHolyDay(year: String): HolyDay{
