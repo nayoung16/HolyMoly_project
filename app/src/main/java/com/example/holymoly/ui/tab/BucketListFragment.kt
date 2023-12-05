@@ -5,26 +5,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.example.holymoly.R
-
+import com.example.holymoly.ui.Bucketadapter
+import com.google.android.material.tabs.TabLayout
 
 class BucketListFragment : Fragment() {
-
+    lateinit var myFragment: View
+    lateinit var viewPagers: ViewPager
+    lateinit var tabLayouts: TabLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_bucket_list, container, false)
-        // Inflate the layout for this fragment
-
-        return view
-
+        myFragment = inflater.inflate(R.layout.fragment_bucket_list, container, false)
+        return myFragment
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setUpViewPager()
+    }
+
+    private fun setUpViewPager() {
+        viewPagers = myFragment.findViewById(R.id.viewPager)
+        tabLayouts = myFragment.findViewById(R.id.tabLayout)
+
+        var adapter = Bucketadapter(childFragmentManager)
+        viewPagers.adapter = adapter
+        tabLayouts.setupWithViewPager(viewPagers)
+        tabLayouts.tabMode = TabLayout.MODE_FIXED
+    }
 }

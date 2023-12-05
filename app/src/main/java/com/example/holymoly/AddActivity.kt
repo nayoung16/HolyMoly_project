@@ -171,7 +171,6 @@ class AddActivity : AppCompatActivity(){
             var cate = flag
 
             firestoreHelper.addHolidayToFirestore(title, s_year, s_month, s_day, e_year, e_month, e_day, cate)
-
             finish()
 
             if(flag == 1) {
