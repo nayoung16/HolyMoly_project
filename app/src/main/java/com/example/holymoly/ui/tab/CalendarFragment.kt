@@ -18,12 +18,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
-import com.example.holymoly.DBViewModel
 import com.example.holymoly.FirestoreHelper
+import com.example.holymoly.HolyDay
 import com.example.holymoly.R
 import com.example.holymoly.databinding.FragmentCalendarBinding
 import com.prolificinteractive.materialcalendarview.CalendarDay
@@ -37,13 +36,16 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.Calendar
 
-class CalendarFragment : Fragment() {
+class CalendarFragment : Fragment(){
     lateinit var binding: FragmentCalendarBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
-
     var holidayList : List<Map<String, Any>>? = null
-    private lateinit var viewModel: DBViewModel
+
+    private var c_month = 0
+    private var c_date : CalendarDay ?= null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -62,21 +64,6 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(DBViewModel::class.java)
-
-        viewModel.flagDB.observe(
-            viewLifecycleOwner,
-        ) { newFlag ->
-            Log.d("ny", "in calendar FlagDB updated: $newFlag")
-            if (newFlag == 1) {
-                // Flag 값이 1로 업데이트되었을 때 calldatabase 함수 호출
-                val currentMonth = CalendarDay.today().month
-                calldatabase(currentMonth)
-                // Flag 값을 원래대로 초기화
-                viewModel.updateFlagDB(0)
-            }
-        }
-
         binding.calendarview.apply {
             // 요일 지정
             setWeekDayLabels(arrayOf("MON", "TUE", "WEN", "THU", "FRI", "SAT", "SUN"))
@@ -89,13 +76,18 @@ class CalendarFragment : Fragment() {
 
         binding.calendarview.setSelectedDate(CalendarDay.today())   // 오늘 날짜에 동그라미
 
+        // 공휴일
+        var holyList1 = HolyDay("2023").holyDatesYear()
+        var holyList2 = HolyDay("2024").holyDatesYear()
+        var holyList3 = HolyDay("2025").holyDatesYear()
+
         binding.calendarview.addDecorators(
-            TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month)
+            TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month), CustomDayDecorator(holyList1), CustomDayDecorator(holyList2), CustomDayDecorator(holyList3)
         )
 
 
         var c_year = CalendarDay.today().year   // 캘린더 화면으로 넘어왔을 때의 년도
-        var c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
+        c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
         var c_day = CalendarDay.today().day // 캘린더 화면으로 넘어왔을 때의 일
 
 
@@ -104,7 +96,9 @@ class CalendarFragment : Fragment() {
         calldatabase(c_month)   // 정보 불러오기
 
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
+            c_date = date
             dateselection(date)
+            calldatabase(c_month)
         }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
@@ -116,7 +110,10 @@ class CalendarFragment : Fragment() {
                 TodayDecorator(),
                 SatDecorator(),
                 SunDecorator(),
-                OtherMonth(date.month)
+                OtherMonth(date.month),
+                CustomDayDecorator(holyList1),
+                CustomDayDecorator(holyList2),
+                CustomDayDecorator(holyList3)
             )
 
             c_year = date.year // 현재 연도
@@ -128,7 +125,7 @@ class CalendarFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun calldatabase(c_month: Int) {
+    fun calldatabase(c_month: Int) {        // 도트 띄우기
         //데이터 읽어오고 ui 설정하는 함수
         lifecycleScope.launch {
             try {
@@ -166,7 +163,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    fun dateselection(date: CalendarDay) {
+    fun dateselection(date: CalendarDay) {  // 리사이클러뷰에 정보 띄우기
         val year = date.year
         val month = date.month
         val day = date.day
@@ -226,6 +223,18 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    class CustomDayDecorator(private val datesToDecorate: List<String>) : DayViewDecorator {    // 공휴일
+        override fun shouldDecorate(day: CalendarDay?): Boolean {
+            val formattedDateString = "${day?.year}${String.format("%02d", day?.month)}${String.format("%02d", day?.day)}"
+            Log.d("j", "${datesToDecorate.toString()}")
+            return datesToDecorate.contains(formattedDateString)
+        }
+
+        override fun decorate(view: DayViewFacade?) {
+            view?.addSpan(ForegroundColorSpan(Color.RED))
+        }
+    }
+
     class EventDecorator(       // dot찍는 데코레이터
         private val dates: HashSet<CalendarDay>,
         private val context: Context
@@ -242,7 +251,6 @@ class CalendarFragment : Fragment() {
     }
 
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getDatesInRange(startDate: CalendarDay, endDate: CalendarDay): List<CalendarDay> {  // 사이의 날들 계산
         val datesInRange = mutableListOf<CalendarDay>()
@@ -256,6 +264,7 @@ class CalendarFragment : Fragment() {
 
         return datesInRange
     }
+
 
     class TodayDecorator : DayViewDecorator {
         val date = CalendarDay.today()
@@ -315,4 +324,5 @@ class CalendarFragment : Fragment() {
             view?.addSpan(ForegroundColorSpan(Color.GRAY))
         }
     }
+
 }

@@ -14,6 +14,8 @@ class MyViewHolder(val binding: MainMonthHolidaysviewBinding)
 class HolidayOfMonthAdapter (val datas : List<List<String>>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
+
+
     override fun getItemCount(): Int = datas.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

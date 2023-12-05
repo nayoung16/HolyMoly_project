@@ -9,6 +9,9 @@ import com.example.holymoly.R
 import com.example.holymoly.databinding.MainEachMonthHolidaysviewBinding
 import java.time.LocalDate
 
+interface OnMonthClickedListener {
+    fun onItemClicked(selectedYear: String, selectedMonth: Int)
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 private val currentMonth: Int = LocalDate.now().month.value
@@ -21,10 +24,9 @@ class MyViewHolder2(val binding: MainEachMonthHolidaysviewBinding)
 class HolidayEachMonthAdapter(
     val datas_each_month: List<String>, val datas_each_month_holidays: List<Int>
     , val year: String,
-    val onItemClickListener: (selectedYear: String, selectedMonth: Int) -> Unit
 )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-
+    private var onMonthClickedListener: OnMonthClickedListener ?= null
     override fun getItemCount(): Int = datas_each_month.size
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -34,6 +36,9 @@ class HolidayEachMonthAdapter(
         val current_month_position = currentMonth - 1
         val selected_year = year
         // 여기에 조건을 추가하여 특정 아이템의 배경을 변경
+
+        //선택된 달
+        val selected_month = position + 1
 
         if (selected_year == currentYear.toString()) {
             if (position < current_month_position) {
@@ -50,16 +55,17 @@ class HolidayEachMonthAdapter(
             binding.eachMonthHolidays.text = datas_each_month_holidays[position+1].toString()
         }
 
-
-
-        holder.itemView.setOnClickListener{
-
-            onItemClickListener(year, position + 1)
+        binding.root.setOnClickListener{
+            onMonthClickedListener?.onItemClicked(selected_year, selected_month)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = MainEachMonthHolidaysviewBinding.inflate(LayoutInflater.from(parent.context),parent, false)
         return MyViewHolder2(binding)
+    }
+
+    fun MonthClick(click : OnMonthClickedListener){
+        this.onMonthClickedListener = click
     }
 }
