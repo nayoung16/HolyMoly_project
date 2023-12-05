@@ -39,6 +39,7 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.HolyMoly.NoActionBar" />
         <activity android:name=".AddActivity" />
+        <activity android:name=".ui.tab.AddBucket"/>
     </application>
 
 </manifest>

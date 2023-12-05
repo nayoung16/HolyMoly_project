@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/about_holiday_item"
-    android:layout_width="wrap_content"
+    android:background="@drawable/new_item_month_holidays_view"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/main_holidays_of_month_view"
-    android:orientation="horizontal">
+    android:layout_margin="5dp"
+    android:orientation="horizontal"
+    android:gravity="center">
+    <ImageView
+        android:layout_marginStart="5dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/calendar_event"/>
     <TextView
         android:id="@+id/holidays_of_month_name2"
         android:textColor="@color/black"
@@ -12,7 +19,6 @@
         android:fontFamily="@font/ibmplexsanskr_regular"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
         android:layout_marginStart="20dp"
         android:layout_weight="1"/>
 
@@ -23,9 +29,7 @@
         android:fontFamily="@font/ibmplexsanskr_regular"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
         android:layout_marginEnd="10dp"
         android:gravity="end"
         android:layout_weight="2" />
-
 </LinearLayout>
