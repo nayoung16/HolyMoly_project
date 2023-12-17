@@ -12,6 +12,7 @@ import com.example.holymoly.databinding.ItemScheduleBinding
 
 class MyViewHolder3(val binding: ItemScheduleBinding) : RecyclerView.ViewHolder(binding.root)
 
+
 //firestore
 private val firestoreHelper = FirestoreHelper()
 class UpcomingSchedulesAdapter(
@@ -32,8 +33,8 @@ class UpcomingSchedulesAdapter(
         when (datas_categories[position]) {     // 카테고리에 맞춰서 이미지 띄우기
             "0" -> holder.binding.itemImage.setImageResource(R.drawable.ic_people)
             "1" -> holder.binding.itemImage.setImageResource(R.drawable.ic_airplane_takeoff)
-            "2" -> holder.binding.itemImage.setImageResource(R.drawable.ic_book)
-            "3" -> holder.binding.itemImage.setImageResource(R.drawable.ic_movie)
+            "2" -> holder.binding.itemImage.setImageResource(R.drawable.ic_movie)
+            "3" -> holder.binding.itemImage.setImageResource(R.drawable.ic_book)
         }
 
         holder.binding.titleRecycler.text = datas_holidays_title[position]  // 일정 제목

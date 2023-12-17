@@ -1,7 +1,5 @@
 package com.example.holymoly.ui.tab
 
-
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -18,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.holymoly.AddActivity
 import com.example.holymoly.FirestoreHelper
@@ -30,9 +27,6 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import com.prolificinteractive.materialcalendarview.format.MonthArrayTitleFormatter
 import com.prolificinteractive.materialcalendarview.spans.DotSpan
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -40,11 +34,8 @@ class CalendarFragment : Fragment(){
     lateinit var binding: FragmentCalendarBinding
     //firestore
     private val firestoreHelper = FirestoreHelper()
-    var holidayList : List<Map<String, Any>>? = null
 
     private var c_month = 0
-    private var c_date : CalendarDay ?= null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +50,10 @@ class CalendarFragment : Fragment(){
 
         return binding.root
     }
+
+    var holyList1 = HolyDay("2023").holyDatesYear()
+    var holyList2 = HolyDay("2024").holyDatesYear()
+    var holyList3 = HolyDay("2025").holyDatesYear()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,15 +71,10 @@ class CalendarFragment : Fragment(){
 
         binding.calendarview.setSelectedDate(CalendarDay.today())   // 오늘 날짜에 동그라미
 
-        // 공휴일
-        var holyList1 = HolyDay("2023").holyDatesYear()
-        var holyList2 = HolyDay("2024").holyDatesYear()
-        var holyList3 = HolyDay("2025").holyDatesYear()
 
-        binding.calendarview.addDecorators(
+        binding.calendarview.addDecorators( // 데코레이터 추가
             TodayDecorator(), SatDecorator(), SunDecorator(), OtherMonth(CalendarDay.today().month), CustomDayDecorator(holyList1), CustomDayDecorator(holyList2), CustomDayDecorator(holyList3)
         )
-
 
         var c_year = CalendarDay.today().year   // 캘린더 화면으로 넘어왔을 때의 년도
         c_month = CalendarDay.today().month // 캘린더 화면으로 넘어왔을 때의 월
@@ -93,12 +83,11 @@ class CalendarFragment : Fragment(){
 
         binding.clickdate.text = "${c_year}년 ${c_month}월 ${c_day}일"     // 캘린더 화면으로 넘어왔을 때의 날짜를 띄워줌
 
-        calldatabase(c_month)   // 정보 불러오기
+        calldatabase(c_month)   // 정보 불러와서 도트 띄우기
 
         binding.calendarview.setOnDateChangedListener { widget, date, selected ->
-            c_date = date
-            dateselection(date)
             calldatabase(c_month)
+            dateselection(date)
         }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
@@ -106,7 +95,7 @@ class CalendarFragment : Fragment(){
             binding.calendarview.removeDecorators()
             binding.calendarview.invalidateDecorators()
 
-            binding.calendarview.addDecorators(
+            binding.calendarview.addDecorators(     // 달력 넘어갔을 때 데코레이터 다시 추가
                 TodayDecorator(),
                 SatDecorator(),
                 SunDecorator(),
@@ -116,10 +105,10 @@ class CalendarFragment : Fragment(){
                 CustomDayDecorator(holyList3)
             )
 
-            c_year = date.year // 현재 연도
-            c_month = date.month // 현재 월
+            c_year = date.year // 현재 달력 연도
+            c_month = date.month // 현재 달력 월
 
-            calldatabase(c_month)
+            calldatabase(c_month)   // 일정 불러와서 도트 띄우기
         }
 
     }
@@ -127,38 +116,25 @@ class CalendarFragment : Fragment(){
     @RequiresApi(Build.VERSION_CODES.O)
     fun calldatabase(c_month: Int) {        // 도트 띄우기
         //데이터 읽어오고 ui 설정하는 함수
-        lifecycleScope.launch {
-            try {
-                holidayList = withContext(Dispatchers.IO) {
-                    firestoreHelper.getMonthHolidaysFromFirestore(c_month)
-                }
-                // holidayList를 사용하여 UI에 데이터를 적용하는 작업 수행
-                // 예를 들어, RecyclerView의 어댑터에 데이터를 설정하거나 화면에 출력
-                var dates4 = mutableListOf<CalendarDay>()
-                if (holidayList != null) {
-                    for (holiday in holidayList!!) {
-                        val year4 = holiday["start_year"].toString().toInt()
-                        val month4 = holiday["start_month"].toString().toInt()
-                        val day4 = holiday["start_date"].toString().toInt()
+        firestoreHelper.getMonthHolidaysFromFirestore(c_month) { holidayList ->
+            var dates4 = mutableListOf<CalendarDay>()
 
-                        val year5 = holiday["end_year"].toString().toInt()
-                        val month5 = holiday["end_month"].toString().toInt()
-                        val day5 = holiday["end_date"].toString().toInt()
+            holidayList.forEach { holiday ->
+                val year4 = holiday["start_year"].toString().toInt()
+                val month4 = holiday["start_month"].toString().toInt()
+                val day4 = holiday["start_date"].toString().toInt()
 
-                        val startCalendarDay = CalendarDay.from(year4, month4, day4)
-                        val endCalendarDay = CalendarDay.from(year5, month5, day5)
+                val year5 = holiday["end_year"].toString().toInt()
+                val month5 = holiday["end_month"].toString().toInt()
+                val day5 = holiday["end_date"].toString().toInt()
 
-                        val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
-                        dates4.addAll(daysInRange)
-                        val decorator = EventDecorator(HashSet(dates4), requireContext())
-                        binding.calendarview.addDecorator(decorator)
-                    }
-                }
+                val startCalendarDay = CalendarDay.from(year4, month4, day4)
+                val endCalendarDay = CalendarDay.from(year5, month5, day5)
 
-
-            } catch (e: Exception) {
-                // 예외 처리
-                Log.e(ContentValues.TAG, "Error fetching holidays: $e")
+                val daysInRange = getDatesInRange(startCalendarDay, endCalendarDay)
+                dates4.addAll(daysInRange)
+                val decorator = EventDecorator(HashSet(dates4), requireContext())
+                binding.calendarview.addDecorator(decorator)
             }
         }
     }
@@ -181,8 +157,9 @@ class CalendarFragment : Fragment(){
             mutableListOf(), mutableListOf(), mutableListOf(),
             mutableListOf(), mutableListOf()
         )
-        if (holidayList != null) {
-            holidayList!!.forEach { holiday ->
+
+        firestoreHelper.getMonthHolidaysFromFirestore(month){ holidayList ->
+            holidayList.forEach{ holiday ->
                 val startYear = holiday["start_year"].toString()
                 val startMonth = holiday["start_month"] as Long
                 val startMonth1 = if (startMonth.toInt() < 10) "0${startMonth.toInt()}" else (startMonth.toInt()).toString()
@@ -208,10 +185,12 @@ class CalendarFragment : Fragment(){
                     adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
                     adapter.datas_categories.add(holiday["category"].toString())
                 }
-            }
 
-            binding.scheduleRecycler.adapter = adapter // RecyclerView에 어댑터 설정
-            binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext()) // 레이아웃 매니저 설정
+                binding.scheduleRecycler.post {
+                    binding.scheduleRecycler.adapter = adapter
+                    binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
+                }
+            }
         }
 
         binding.fab.setOnClickListener{ // +버튼 누르면 일정 추가!

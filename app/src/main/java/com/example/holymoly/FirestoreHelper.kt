@@ -219,7 +219,6 @@ class FirestoreHelper {
                 }
                 adapter.notifyDataSetChanged()
             }
-
         return informs
     }
 
@@ -273,105 +272,51 @@ class FirestoreHelper {
 
     }
 
-    suspend fun getMonthHolidaysFromFirestore1(this_month:Int): List<Map<String, Any>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                var documents_start =
-                db.collection("user")
-                    .document(userEmail!!)
-                    .collection("holiday")
-                    .whereEqualTo("start_month", this_month)
-                    .get()
-                    .await()
 
-                val documents_end = db.collection("user")
-                    .document(userEmail!!)
-                    .collection("holiday")
-                    .whereEqualTo("end_month", this_month)
-                    .get()
-                    .await()
+    fun getMonthHolidaysFromFirestore(this_month:Int, callback: (List<Map<String, Any>>) -> Unit) {
+        var holidayList = mutableListOf<Map<String, Any>>()
 
-                val holidayList = mutableListOf<Map<String, Any>>()
+        val startQuery = db.collection("user")
+            .document(userEmail!!)
+            .collection("holiday")
+            .whereEqualTo("start_month", this_month)
 
-                for (document in documents_start) {
-                    // 각 문서에 대한 처리
-                    val data = document.data
-                    // data를 사용하여 필요한 작업 수행
-                    if (data != null) {
-                        holidayList.add(data)
-                    }
-                }
+        val endQuery = db.collection("user")
+            .document(userEmail!!)
+            .collection("holiday")
+            .whereEqualTo("end_month", this_month)
 
-                for (document in documents_end) {
-                    // 각 문서에 대한 처리
-                    val data = document.data
-                    // data를 사용하여 필요한 작업 수행
-                    if (!holidayList.contains(data)) {
-                        holidayList.add(data)
-                    }
-                }
-                return@withContext holidayList
-            } catch (exception: Exception) {
-                // 쿼리 실패 시 처리
-                Log.w(TAG, "Error getting documents: ", exception)
-                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
+        // 문서가 변경될 때마다 콜백 함수 실행
+        startQuery.addSnapshotListener { documents_start, startException -> // 문서 실시간 확인
+            if (startException != null) {
+                Log.w(TAG, "Error getting start documents: ", startException)
+                callback(emptyList())
+                return@addSnapshotListener
             }
-        }
-    }
 
-    @SuppressLint("SuspiciousIndentation")
-    suspend fun getMonthHolidaysFromFirestore2(this_month:Int, adapter: UpcomingSchedulesAdapter): List<Map<String, Any>> {
-        return withContext(Dispatchers.IO) {
-            try {
-                var documents_start: MutableList<DocumentSnapshot> = mutableListOf()
-                    db.collection("user")
-                    .document(userEmail!!)
-                    .collection("holiday").addSnapshotListener{ snap, e ->
-                            documents_start.clear()
-                            for(doc in snap!!.documents){
-                                if(doc["start_month"] == this_month)
-                                    documents_start.add(doc)
-                            }
-                            adapter.notifyDataSetChanged()
-                        }
-                    /*.whereEqualTo("start_month", this_month)
-                    .get()
-                    .await()*/
-
-                /*val documents_end = db.collection("user")
-                    .document(userEmail!!)
-                    .collection("holiday")
-                    .whereEqualTo("end_month", this_month)
-                    .get()
-                    .await()*/
-
-                //Log.d("ny", "Number of documents: ${documents_start.size()}")
-                //Log.d("ny", "Number of documents: ${documents_end.size()}")
-
-                val holidayList = mutableListOf<Map<String, Any>>()
-
-                for (document in documents_start) {
-                    // 각 문서에 대한 처리
+            documents_start?.let {
+                for (document in it) {
                     val data = document.data
-                    // data를 사용하여 필요한 작업 수행
-                    if (data != null) {
-                        holidayList.add(data)
-                    }
+                    holidayList.add(data)
                 }
 
-                /*for (document in documents_end) {
-                    // 각 문서에 대한 처리
-                    val data = document.data
-                    // data를 사용하여 필요한 작업 수행
-                    if (!holidayList.contains(data)) {
-                        holidayList.add(data)
+                endQuery.addSnapshotListener { documents_end, endException ->
+                    if (endException != null) {
+                        Log.w(TAG, "Error getting end documents: ", endException)
+                        callback(holidayList)
+                        return@addSnapshotListener
                     }
-                }*/
-                return@withContext holidayList
-            } catch (exception: Exception) {
-                // 쿼리 실패 시 처리
-                Log.w(TAG, "Error getting documents: ", exception)
-                return@withContext emptyList() // 실패할 경우 빈 리스트 반환 또는 예외처리 방식에 따라 변경
+
+                    documents_end?.let { endDocs ->
+                        for (document in endDocs) {
+                            val data = document.data
+                            if (!holidayList.contains(data)) {
+                                holidayList.add(data)
+                            }
+                        }
+                        callback(holidayList)
+                    }
+                }
             }
         }
     }
@@ -403,8 +348,10 @@ class FirestoreHelper {
         }
     }
 
-    fun deleteHolidaysFromFirestore(delete_title: String, adapter: UpcomingSchedulesAdapter) {
-            db.collection("user")
+
+    fun deleteHolidaysFromFirestore(delete_title: String) {
+        db.collection("user")
+
                 .document(userEmail!!)
                 .collection("holiday")
                 .document(delete_title)
@@ -412,7 +359,9 @@ class FirestoreHelper {
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
 
-        adapter.notifyDataSetChanged()
+        //upcomingschedules 어댑터랑 연결시켜주려고 했는데 잘 안되는둣...?
+        //adapter.notifyDataSetChanged()
+
     }
 
     companion object {
