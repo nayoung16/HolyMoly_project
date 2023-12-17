@@ -12,6 +12,7 @@ import com.example.holymoly.databinding.ItemScheduleBinding
 
 class MyViewHolder3(val binding: ItemScheduleBinding) : RecyclerView.ViewHolder(binding.root)
 
+
 //firestore
 private val firestoreHelper = FirestoreHelper()
 class UpcomingSchedulesAdapter(
