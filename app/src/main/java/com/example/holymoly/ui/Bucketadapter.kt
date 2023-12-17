@@ -1,18 +1,20 @@
 package com.example.holymoly.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.example.holymoly.ui.tab.FirstFragment
-import com.example.holymoly.ui.tab.SecondFragment
-
+import com.example.holymoly.ui.tab.BucketDoFragment
+import com.example.holymoly.ui.tab.BucketDoneFragment
+@RequiresApi(Build.VERSION_CODES.O)
 class Bucketadapter(manager: FragmentManager): FragmentPagerAdapter(manager) {
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> FirstFragment()
-            1 -> SecondFragment()
-            else -> FirstFragment()
+            0 -> BucketDoFragment()
+            1 -> BucketDoneFragment()
+            else -> BucketDoFragment()
         }
     }
 
