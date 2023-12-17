@@ -1,8 +1,15 @@
 package com.example.holymoly
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.example.holymoly.ui.drawer.TicketAdapter
 import com.example.holymoly.ui.drawer.TicketInform
+import com.example.holymoly.ui.tab.BucketDoneInform
+import com.example.holymoly.ui.tab.BucketDoneItemAdapter
+import com.example.holymoly.ui.tab.BucketInform
+import com.example.holymoly.ui.tab.BucketItemAdapter
+import com.example.holymoly.ui.tab.UpcomingSchedulesAdapter
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -25,6 +32,153 @@ class FirestoreHelper {
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
 
+    //버킷리스트 저장 (Do & Done)
+    fun addBucketDoToFireStore(time: String, title: String, context: String, process: Boolean){
+        val data = hashMapOf(
+            "time" to time,
+            "title" to title,
+            "context" to context,
+            "process" to process )
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDo").document(time).set(data)
+            .addOnSuccessListener { Log.d("DB", "$time/$title/$process") }
+            .addOnFailureListener{ Log.d("DB", "Fail") }
+    }
+
+    fun addBucketDoneToFireStore(items: MutableSet<String>, adapter: BucketItemAdapter){
+        val user = db.collection("user").document(userEmail!!)     //  현재 계정
+        Log.d("DB", items.toString())
+        for (time in items){ //bucketDo 에서 해당 time의 문서 가져와 Done에 저장
+            Log.d("DB", "$time")
+            user.collection("bucketDo")
+                .document(time)
+                .get()
+                .addOnCompleteListener { task ->
+                    if(task.isSuccessful){ //db에서 데이터 가져오기 성공 시
+                        val doc = task.result
+                        if(doc != null && doc.exists()){ //해당 id의 문서가 존재하는 경우
+                            val data = doc.data     //Do에서 데이터 가져오기
+
+                            //Done에 저장
+                            user.collection("bucketDone")
+                                .document(time).set(hashMapOf("time" to time,
+                                    "title" to (data?.get("title")?.toString()?: ""),
+                                    "context" to (data?.get("context")?.toString()?: "")))
+                                .addOnSuccessListener { Log.d("DB", "Done") }
+
+                            //Do에서 해당 문서 삭제
+                            user.collection("bucketDo")
+                                .document(time).delete()
+                                .addOnSuccessListener { Log.d("DB", "Do Delete : $time") }
+                                .addOnFailureListener{ Log.d("DB", "Fail Delete : $time") }
+
+                        }else{ //해당 문서가 존재하지 않는 경우
+                            Log.d("DB", "not found")
+                        }
+                        Log.d("DB", "task success")
+                    }else{ //db에서 데이터 가져오기 실패 시
+                        Log.d("DB", "task fail")
+                    }
+                }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+
+    //버킷리스트 가져오기 (Do & Done)
+    fun getBucketDoToFireStore(adapter: BucketItemAdapter):List<BucketInform>{
+        var informs : MutableList<BucketInform> = mutableListOf()
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDo")
+            .addSnapshotListener{ qsnap, e ->
+                informs.clear()
+                for(doc in qsnap!!.documents){
+                    val time = doc["time"].toString()
+                    val title = doc["title"].toString()
+                    val context = doc["context"].toString()
+                    val process = doc["process"].toString().toBoolean()
+                    informs.add(BucketInform(time, title, context, process))
+                }
+                adapter.notifyDataSetChanged()
+            }
+        return informs
+    }
+
+    fun getBucketDoneToFireStore(adapter: BucketDoneItemAdapter):List<BucketDoneInform>{
+        var informs : MutableList<BucketDoneInform> = mutableListOf()
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDone")
+            .addSnapshotListener{ qsnap, e ->
+                informs.clear()
+                for(doc in qsnap!!.documents){
+                    val time = doc["time"].toString()
+                    val title = doc["title"].toString()
+                    val context = doc["context"].toString()
+                    informs.add(BucketDoneInform(time, title, context))
+                }
+                adapter.notifyDataSetChanged()
+            }
+        return informs
+    }
+
+    //선택된 항목들 진행시키기
+    fun modifyBucketDoToFireStore(items: MutableSet<String>, adapter: BucketItemAdapter){
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDo").document(time)
+                .update("process", "true")
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    //버킷리스트 삭제하기 (Do & Done)
+    fun deleteBucketDoToFireStore(items: MutableSet<String>, adapter:BucketItemAdapter) : String{
+        var message : String = ""
+
+        //아이템 삭제
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDo").document(time)
+                .delete()
+                .addOnSuccessListener { message = "success" }  //성공
+                .addOnFailureListener { e ->
+                    message = if(e is FirebaseFirestoreException
+                        && e.code == FirebaseFirestoreException.Code.NOT_FOUND){
+                        "notFound"  //해당 아이템이 존재하지 않음
+                    } else{
+                        "error"     //다른 예외
+                    }
+                }
+        }
+        adapter.notifyDataSetChanged()
+        return message
+    }
+
+    fun deleteBucketDoneToFireStore(items: MutableSet<String>, adapter:BucketDoneItemAdapter) : String{
+        var message : String = ""
+
+        //아이템 삭제
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDone").document(time)
+                .delete()
+                .addOnSuccessListener { message = "success" }  //성공
+                .addOnFailureListener { e ->
+                    message = if(e is FirebaseFirestoreException
+                        && e.code == FirebaseFirestoreException.Code.NOT_FOUND){
+                        "notFound"  //해당 아이템이 존재하지 않음
+                    } else{
+                        "error"     //다른 예외
+                    }
+                }
+
+        }
+        adapter.notifyDataSetChanged()
+        return message
+    }
 
     fun storeTicketToFireStore(time: String, departCountry: String, arriveCountry : String, departDate : String, arriveDate:String){
         //국제선 or 국내선
@@ -118,6 +272,7 @@ class FirestoreHelper {
 
     }
 
+
     fun getMonthHolidaysFromFirestore(this_month:Int, callback: (List<Map<String, Any>>) -> Unit) {
         var holidayList = mutableListOf<Map<String, Any>>()
 
@@ -193,16 +348,20 @@ class FirestoreHelper {
         }
     }
 
+
     fun deleteHolidaysFromFirestore(delete_title: String) {
         db.collection("user")
+
                 .document(userEmail!!)
                 .collection("holiday")
                 .document(delete_title)
                 .delete()
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+
         //upcomingschedules 어댑터랑 연결시켜주려고 했는데 잘 안되는둣...?
         //adapter.notifyDataSetChanged()
+
     }
 
     companion object {
