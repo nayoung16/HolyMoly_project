@@ -39,8 +39,8 @@ class MyAdapter(val datas_holidays_title: MutableList<String>, val datas_holiday
         when (datas_categories[position]) {
             "0" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_people)
             "1" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_airplane_takeoff)
-            "2" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_book)
-            "3" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+            "2" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_movie)
+            "3" -> binding.itemImageHolidays.setImageResource(R.drawable.ic_book)
         }
 
         binding.itemDataHolidays.text=datas_holidays_title[position]
