@@ -1,8 +1,15 @@
 package com.example.holymoly
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.example.holymoly.ui.drawer.TicketAdapter
 import com.example.holymoly.ui.drawer.TicketInform
+import com.example.holymoly.ui.tab.BucketDoneInform
+import com.example.holymoly.ui.tab.BucketDoneItemAdapter
+import com.example.holymoly.ui.tab.BucketInform
+import com.example.holymoly.ui.tab.BucketItemAdapter
+import com.example.holymoly.ui.tab.UpcomingSchedulesAdapter
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -25,6 +32,153 @@ class FirestoreHelper {
             .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
 
+    //버킷리스트 저장 (Do & Done)
+    fun addBucketDoToFireStore(time: String, title: String, context: String, process: Boolean){
+        val data = hashMapOf(
+            "time" to time,
+            "title" to title,
+            "context" to context,
+            "process" to process )
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDo").document(time).set(data)
+            .addOnSuccessListener { Log.d("DB", "$time/$title/$process") }
+            .addOnFailureListener{ Log.d("DB", "Fail") }
+    }
+
+    fun addBucketDoneToFireStore(items: MutableSet<String>, adapter: BucketItemAdapter){
+        val user = db.collection("user").document(userEmail!!)     //  현재 계정
+        Log.d("DB", items.toString())
+        for (time in items){ //bucketDo 에서 해당 time의 문서 가져와 Done에 저장
+            Log.d("DB", "$time")
+            user.collection("bucketDo")
+                .document(time)
+                .get()
+                .addOnCompleteListener { task ->
+                    if(task.isSuccessful){ //db에서 데이터 가져오기 성공 시
+                        val doc = task.result
+                        if(doc != null && doc.exists()){ //해당 id의 문서가 존재하는 경우
+                            val data = doc.data     //Do에서 데이터 가져오기
+
+                            //Done에 저장
+                            user.collection("bucketDone")
+                                .document(time).set(hashMapOf("time" to time,
+                                    "title" to (data?.get("title")?.toString()?: ""),
+                                    "context" to (data?.get("context")?.toString()?: "")))
+                                .addOnSuccessListener { Log.d("DB", "Done") }
+
+                            //Do에서 해당 문서 삭제
+                            user.collection("bucketDo")
+                                .document(time).delete()
+                                .addOnSuccessListener { Log.d("DB", "Do Delete : $time") }
+                                .addOnFailureListener{ Log.d("DB", "Fail Delete : $time") }
+
+                        }else{ //해당 문서가 존재하지 않는 경우
+                            Log.d("DB", "not found")
+                        }
+                        Log.d("DB", "task success")
+                    }else{ //db에서 데이터 가져오기 실패 시
+                        Log.d("DB", "task fail")
+                    }
+                }
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+
+    //버킷리스트 가져오기 (Do & Done)
+    fun getBucketDoToFireStore(adapter: BucketItemAdapter):List<BucketInform>{
+        var informs : MutableList<BucketInform> = mutableListOf()
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDo")
+            .addSnapshotListener{ qsnap, e ->
+                informs.clear()
+                for(doc in qsnap!!.documents){
+                    val time = doc["time"].toString()
+                    val title = doc["title"].toString()
+                    val context = doc["context"].toString()
+                    val process = doc["process"].toString().toBoolean()
+                    informs.add(BucketInform(time, title, context, process))
+                }
+                adapter.notifyDataSetChanged()
+            }
+        return informs
+    }
+
+    fun getBucketDoneToFireStore(adapter: BucketDoneItemAdapter):List<BucketDoneInform>{
+        var informs : MutableList<BucketDoneInform> = mutableListOf()
+
+        db.collection("user").document(userEmail!!)
+            .collection("bucketDone")
+            .addSnapshotListener{ qsnap, e ->
+                informs.clear()
+                for(doc in qsnap!!.documents){
+                    val time = doc["time"].toString()
+                    val title = doc["title"].toString()
+                    val context = doc["context"].toString()
+                    informs.add(BucketDoneInform(time, title, context))
+                }
+                adapter.notifyDataSetChanged()
+            }
+        return informs
+    }
+
+    //선택된 항목들 진행시키기
+    fun modifyBucketDoToFireStore(items: MutableSet<String>, adapter: BucketItemAdapter){
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDo").document(time)
+                .update("process", "true")
+        }
+        adapter.notifyDataSetChanged()
+    }
+
+    //버킷리스트 삭제하기 (Do & Done)
+    fun deleteBucketDoToFireStore(items: MutableSet<String>, adapter:BucketItemAdapter) : String{
+        var message : String = ""
+
+        //아이템 삭제
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDo").document(time)
+                .delete()
+                .addOnSuccessListener { message = "success" }  //성공
+                .addOnFailureListener { e ->
+                    message = if(e is FirebaseFirestoreException
+                        && e.code == FirebaseFirestoreException.Code.NOT_FOUND){
+                        "notFound"  //해당 아이템이 존재하지 않음
+                    } else{
+                        "error"     //다른 예외
+                    }
+                }
+        }
+        adapter.notifyDataSetChanged()
+        return message
+    }
+
+    fun deleteBucketDoneToFireStore(items: MutableSet<String>, adapter:BucketDoneItemAdapter) : String{
+        var message : String = ""
+
+        //아이템 삭제
+        for(time in items){
+            db.collection("user").document(userEmail!!)
+                .collection("bucketDone").document(time)
+                .delete()
+                .addOnSuccessListener { message = "success" }  //성공
+                .addOnFailureListener { e ->
+                    message = if(e is FirebaseFirestoreException
+                        && e.code == FirebaseFirestoreException.Code.NOT_FOUND){
+                        "notFound"  //해당 아이템이 존재하지 않음
+                    } else{
+                        "error"     //다른 예외
+                    }
+                }
+
+        }
+        adapter.notifyDataSetChanged()
+        return message
+    }
 
     fun storeTicketToFireStore(time: String, departCountry: String, arriveCountry : String, departDate : String, arriveDate:String){
         //국제선 or 국내선
@@ -119,10 +273,11 @@ class FirestoreHelper {
 
     }
 
-    suspend fun getMonthHolidaysFromFirestore(this_month:Int): List<Map<String, Any>> {
+    suspend fun getMonthHolidaysFromFirestore1(this_month:Int): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
-                val documents_start = db.collection("user")
+                var documents_start =
+                db.collection("user")
                     .document(userEmail!!)
                     .collection("holiday")
                     .whereEqualTo("start_month", this_month)
@@ -142,7 +297,9 @@ class FirestoreHelper {
                     // 각 문서에 대한 처리
                     val data = document.data
                     // data를 사용하여 필요한 작업 수행
-                    holidayList.add(data)
+                    if (data != null) {
+                        holidayList.add(data)
+                    }
                 }
 
                 for (document in documents_end) {
@@ -161,24 +318,25 @@ class FirestoreHelper {
             }
         }
     }
-/*
+
+    @SuppressLint("SuspiciousIndentation")
     suspend fun getMonthHolidaysFromFirestore2(this_month:Int, adapter: UpcomingSchedulesAdapter): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
                 var documents_start: MutableList<DocumentSnapshot> = mutableListOf()
-                db.collection("user")
+                    db.collection("user")
                     .document(userEmail!!)
                     .collection("holiday").addSnapshotListener{ snap, e ->
-                        documents_start.clear()
-                        for(doc in snap!!.documents){
-                            if(doc["start_month"] == this_month)
-                                documents_start.add(doc)
+                            documents_start.clear()
+                            for(doc in snap!!.documents){
+                                if(doc["start_month"] == this_month)
+                                    documents_start.add(doc)
+                            }
+                            adapter.notifyDataSetChanged()
                         }
-                        adapter.notifyDataSetChanged()
-                    }
-                /*.whereEqualTo("start_month", this_month)
-                .get()
-                .await()*/
+                    /*.whereEqualTo("start_month", this_month)
+                    .get()
+                    .await()*/
 
                 /*val documents_end = db.collection("user")
                     .document(userEmail!!)
@@ -218,8 +376,6 @@ class FirestoreHelper {
         }
     }
 
- */
-
     suspend fun getAllHolidaysFromFirestore(): List<Map<String, Any>> {
         return withContext(Dispatchers.IO) {
             try {
@@ -247,7 +403,7 @@ class FirestoreHelper {
         }
     }
 
-    fun deleteHolidaysFromFirestore(delete_title: String) {
+    fun deleteHolidaysFromFirestore(delete_title: String, adapter: UpcomingSchedulesAdapter) {
             db.collection("user")
                 .document(userEmail!!)
                 .collection("holiday")
@@ -255,6 +411,8 @@ class FirestoreHelper {
                 .delete()
                 .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+
+        adapter.notifyDataSetChanged()
     }
 
     companion object {

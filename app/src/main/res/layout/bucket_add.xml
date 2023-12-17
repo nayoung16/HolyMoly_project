@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:fontFamily="@font/ibmplexsanskr_semibold"
-            android:text="@string/delete"/>
+            android:text="@string/cancel"/>
         <Button
             android:id="@+id/savebucket"
             android:layout_width="150dp"
