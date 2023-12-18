@@ -20,6 +20,7 @@
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 android:text="@string/md_travel"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -41,6 +42,7 @@
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 android:text="@string/md_home"/>
 
             <LinearLayout
@@ -139,6 +141,7 @@
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 android:text="@string/md_hobby"/>
 
             <androidx.recyclerview.widget.RecyclerView

@@ -30,7 +30,7 @@
         android:backgroundTint="#C9B2E9"
         android:src="@android:drawable/ic_menu_delete"
         app:fabCustomSize="@dimen/circle_width" />
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bucket_finish_btn"
         android:layout_width="@dimen/circle_width"
         android:layout_height="@dimen/circle_width"
@@ -39,10 +39,9 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="80dp"
         android:backgroundTint="#C9B2E9"
-        android:textAlignment="center"
-        android:text="완료"
-        android:textSize="8sp"/>
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:src="@android:drawable/alert_dark_frame"
+        app:fabCustomSize="@dimen/circle_width"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bucket_start_btn"
         android:layout_width="@dimen/circle_width"
         android:layout_height="@dimen/circle_width"
@@ -51,9 +50,8 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="140dp"
         android:backgroundTint="#C9B2E9"
-        android:textAlignment="center"
-        android:text="시작"
-        android:textSize="8sp"/>
+        android:src="@android:drawable/ic_media_play"
+        app:fabCustomSize="@dimen/circle_width"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/bucket_add_btn"
         android:layout_width="@dimen/circle_width"

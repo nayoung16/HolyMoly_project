@@ -34,8 +34,8 @@ class MDFragment : Fragment() {
         val travelAdapter = TravelCountryAdapter()
         binding.mdTravelLayout.adapter = travelAdapter
         travelAdapter.TravelItemClick(object : SetOnTravelItemClickListener{  //리스너 함수 등록
-            override fun showPopupTravel() {
-                PopupMD(requireContext()).show()
+            override fun showPopupTravel(month : Int) {
+                PopupMD(requireContext(), "travel", month).show()
             }
         })
         layoutManager.scrollToPosition(month-1) //현재 달에 대한 정보를 가운데로 배치
@@ -86,10 +86,10 @@ class MDFragment : Fragment() {
     }
 
     private fun showPopupBook() {
-        PopupMD(requireContext()).show()
+        PopupMD(requireContext(), "book", 0).show()
     }
 
     private fun showPopupMovie(){
-        PopupMD(requireContext()).show()
+        PopupMD(requireContext(), "movie", 0).show()
     }
 }
