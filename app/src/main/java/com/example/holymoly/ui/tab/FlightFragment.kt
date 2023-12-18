@@ -41,7 +41,7 @@ class FlightFragment : Fragment(), OnCountryItemSelectedListener {
         //나라 선택 어댑터
 
 
-        val countryList = listOf("ICN", "TYO")
+        val countryList = listOf("ICN", "TYO", "DAD", "CDG", "JFK", "GUM", "PEK", "CEB", "TPE", "MEL")
         //출발 나라
         val countryAdapterFrom = FlightyCountryAdapter(requireContext(), binding.flightyFrom, countryList)
         countryAdapterFrom.setOnCountryItemSelectedListener(this)

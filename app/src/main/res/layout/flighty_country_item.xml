@@ -3,7 +3,7 @@
     android:id="@+id/CountryItem"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:textSize="35sp"
+    android:textSize="29sp"
     android:textColor="@color/black"
     android:gravity="center"
     android:paddingHorizontal="10dp" />
