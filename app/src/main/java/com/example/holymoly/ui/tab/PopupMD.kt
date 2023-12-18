@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.WindowManager
 import com.example.holymoly.databinding.ActivityPopupMdBinding
 
-class PopupMD(context: Context) : Dialog(context) {
+class PopupMD(context: Context, val category : String, val month : Int) : Dialog(context) {
     private lateinit var binding: ActivityPopupMdBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +29,14 @@ class PopupMD(context: Context) : Dialog(context) {
         //뒤로가기 버튼, 빈 화면 터치를 통해 다이얼로그가 사라지지 않도록 함
         setCancelable(false)
 
-        //뷰 페이저 어댑터 연결
-        val adapter = PopupPosterAdapter()
+        //각 카테고리에 따른 뷰 페이저 어댑터 연결
+        var flag = -1
+        when(category){
+            "travel" -> flag = 0
+            "movie" -> flag = 1
+            "book" -> flag = 2
+        }
+        val adapter = PopupPosterAdapter(flag, month)
         binding.mdPopupViewpager.adapter = adapter
 
         //버튼 리스너 등록

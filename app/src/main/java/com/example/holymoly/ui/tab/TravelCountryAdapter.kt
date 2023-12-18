@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.databinding.MdTravelItemviewBinding
 
 interface SetOnTravelItemClickListener{
-    fun showPopupTravel()
+    fun showPopupTravel(month : Int)
 }
 class MyTravelViewHolder(val binding: MdTravelItemviewBinding)
     : RecyclerView.ViewHolder(binding.root)
@@ -27,7 +27,7 @@ class TravelCountryAdapter ( )
 
         //클릭 리스너 등록
         binding.root.setOnClickListener{
-            onTravelItemClickListener?.showPopupTravel()
+            onTravelItemClickListener?.showPopupTravel(position+1)
         }
     }
 
