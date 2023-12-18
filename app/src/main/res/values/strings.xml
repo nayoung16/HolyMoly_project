@@ -66,6 +66,7 @@
     <string name="md_movie_text1">너 F야?\n공감 펑펑</string>
     <string name="md_movie_text2">인생 영화!</string>
     <string name="md_travel">답답한 곳에서 떠나,\n새로운 경험을 만들어 봐요!</string>
+
     <string name="md_travel_1">추울 땐 따뜻한 나라로!\n1월 여행지</string>
     <string name="md_travel_2">겨울을 제대로 즐기고 싶다면?\n2월 여행지</string>
     <string name="md_travel_3">날씨가 풀릴 땐,\n3월 여행지</string>
@@ -82,19 +83,87 @@
     <string name="md_hobby">#힐링#취미#성장</string>
     <string name="md_hobby_1">#서핑</string>
     <string name="md_hobby_2">#캠핑</string>
-    <string name="md_hobby_3">#클라이밍</string>
+    <string name="md_hobby_3">#드럼</string>
     <string name="md_hobby_4">#요리</string>
-    <string name="md_hobby_5">#DIY</string>
-    <string name="md_hobby_6">#그림</string>
-    <string name="md_hobby_7">#음악</string>
-    <string name="md_hobby_8">#퍼즐</string>
-    <string name="md_hobby_9">#요가</string>
+    <string name="md_hobby_5">#스키</string>
+    <string name="md_hobby_6">#DIY</string>
+    <string name="md_hobby_7">#낚시</string>
+    <string name="md_hobby_8">#댄스</string>
+    <string name="md_hobby_9">#관람</string>
+
+    <string name="popup_trip1_1_title">괌</string>
+    <string name="popup_trip1_2_title">필리핀</string>
+    <string name="popup_trip2_1_title">삿포로</string>
+    <string name="popup_trip2_2_title">사이판</string>
+    <string name="popup_trip3_1_title">베트남</string>
+    <string name="popup_trip3_2_title">뉴질랜드</string>
+    <string name="popup_trip4_1_title">싱가포르</string>
+    <string name="popup_trip4_2_title">이탈리아</string>
+    <string name="popup_trip5_1_title">프랑스</string>
+    <string name="popup_trip5_2_title">체코</string>
+    <string name="popup_trip6_1_title">그리스</string>
+    <string name="popup_trip6_2_title">터키</string>
+    <string name="popup_trip7_1_title">몽골</string>
+    <string name="popup_trip7_2_title">스위스</string>
+    <string name="popup_trip8_1_title">헝가리</string>
+    <string name="popup_trip8_2_title">영국</string>
+    <string name="popup_trip9_1_title">탄자니아</string>
+    <string name="popup_trip9_2_title">호주</string>
+    <string name="popup_trip10_1_title">멕시코</string>
+    <string name="popup_trip10_2_title">캐나다</string>
+    <string name="popup_trip11_1_title">스페인</string>
+    <string name="popup_trip11_2_title">두바이</string>
+    <string name="popup_trip12_1_title">핀란드</string>
+    <string name="popup_trip12_2_title">대만</string>
+
+    <string name="popup_trip1_1_script">가족단위로 많이 찾는 괌은 우기여도 비가 많이 오지 않아 일년 내내 여행하기 좋은 나라랍니다.</string>
+    <string name="popup_trip1_2_script">1~2월에는 날씨가 따뜻하고 많은 별을 볼 수 있으니 여행의 최적기라고 할 수 있겠어요.삿포로</string>
+    <string name="popup_trip2_2_script">사이판은 우기인 7월부터 10월을 제외하고는 모두 좋아요!</string>
+    <string name="popup_trip3_1_script">6월에서 10월 까지는 우기, 11월부터 3월 까지는 건기라고 볼 수 있어요. 하노이의 경우 1, 2월 달에는 조금 쌀쌀하니 가시는 분들은 참고하세요:)</string>
+    <string name="popup_trip3_2_script">뉴질랜드의 여행 최적기는 북섬과 남섬으로 나뉘어요! 북섬은 11월 말~3월 초, 남섬은 12월 초~2월 말이에요.</string>
+    <string name="popup_trip4_1_script">깨끗하고 치안이 좋아 첫 여행지로 많이 찾는 싱가폴, 싱가폴 팁이라면 뭐니뭐니해도 그레이트세일이 있는 6, 7월에 가서 득템하는 것!</string>
+    <string name="popup_trip4_2_script">이탈리아에 가기 가장 좋은 시기는 봄과 가을이에요. 특히 4월에서 6월은 최적의 시기이니 꼭 이탈리아의 아름다운 날씨를 즐겨보세요. </string>
+    <string name="popup_trip5_1_script">모두에게 유럽의 로망을 심어주는 나라 프랑스는 5월에 칸 영화제도 있으니 영화를 사랑하는 분들은 주목해 주세요!</string>
+    <string name="popup_trip5_2_script">대표적인 저렴한 유럽 여행지로 꼽히는 체코는 특히 길거리 음식이 굉장히 저렴하니 먹방 여행으로도 딱이에요.</string>
+    <string name="popup_trip6_1_script">그리스는 민주적인 아테네부터 호전적인 스파르타까지 매혹적인 고대 문화로 유명해요. 문명 탄생지의 유적들이 가장 매력적이에요</string>
+    <string name="popup_trip6_2_script">터키는 겨울에는 눈과 비가 자주 내려요. 그래서 겨울을 조금 피해주시는게 좋아요.</string>
+    <string name="popup_trip7_1_script">고비사막을 투어하기 가장 최적기인 6월~9월에 떠나는걸 추천해요. 3월과 4월, 그러니까 봄은 몽골의 우기이니 여행에 참고해 주세요.</string>
+    <string name="popup_trip7_2_script">스위스에서는 취리히나 인터라켄을 많이 찾으시죠? 만약 목적이 스키여행이라면 1월에서 3월을 추천해요!</string>
+    <string name="popup_trip8_1_script">아름다운 야경과 유럽 속 저렴한 물가로 인기를 누리는 헝가리의 여름은 햇빛은 강하지만 습하지 않아, 낮에도 쾌적한 편이에요.</string>
+    <string name="popup_trip8_2_script">7~8월은 트라팔가 광장을 중심으로 주말 거리 축제가 많이 열리니, 여름 런던의 축제를 즐겨보세요.</string>
+    <string name="popup_trip9_1_script">마운트 킬리만자로와 세렝게티 국립공원 보러 가볼까요?</string>
+    <string name="popup_trip9_2_script">우리와 반대의 계절을 가지고 있는 호주, 호주 여행은 9월과 10월을 추천해요. 호주의 봄을 한껏 만끽하세요!</string>
+    <string name="popup_trip10_1_script">아름다운 자연과 고대문명의 역사가 숨쉬는 따뜻한 나라, 멕시코로 떠나는 오감만족 여행.</string>
+    <string name="popup_trip10_2_script">단풍국 캐나다는 4월부터 10월까지 여행하기 좋아요. 11월부터 2월은 비가 잦은 편이니 여행에 참고하시길 바라요.</string>
+    <string name="popup_trip11_1_script">1년 내내 여행하기 좋은 스페인, 원래도 좋은 날씨로 꼽히는 봄과 가을에는 더더욱 좋겠죠? 8월에는 스페인을 대표하는 토마토 축제가 열리니 참여해 보세요!</string>
+    <string name="popup_trip11_2_script">두바이는 현재 중동에서 가장 인기가 많은 여행지 가운데 하나입니다. 현대적인 이 대도시를 장식하는 건축학적 경이로움이 여행자의 시선을 사로잡습니다.</string>
+    <string name="popup_trip12_1_script">핀란드는 오로라를 보러 가는 투어로 유명하죠? 오로라를 볼 수 있는 10월부터 3월까지가 핀란드에 가기 좋은 최적의 시기랍니다.</string>
+    <string name="popup_trip12_2_script">일 년 내내 종잡을 수 없는 비 소식에 당황스럽기도 하지만, 그것 또한 대만의 매력이니까요. 개인적으로는 가을에서 겨울, 그러니까 딱 지금 이 시기를 추천해요. </string>
 
     <string name="popup_movie1_title">포레스트 검프</string>
     <string name="popup_movie2_title">트루먼 쇼</string>
+    <string name="popup_movie3_title">인셉션</string>
+    <string name="popup_movie4_title">해리포터</string>
+    <string name="popup_movie5_title">노량</string>
 
-    <string name="popup_movie1_script">포레스트 검프</string>
-    <string name="popup_movie2_script">트루먼 쇼</string>
+    <string name="popup_movie1_script">불편한 다리, 남들보다 조금 떨어지는 지능을 가진 외톨이 소년 ‘포레스트 검프’ 헌신적이고 강인한 어머니의 보살핌과 콩깍지 첫사랑 소녀 ‘제니’와의 만남으로 사회의 편견과 괴롭힘 속에서도 따뜻하고 순수한 마음을 지니고 성장한다. </string>
+    <string name="popup_movie2_script">작은 섬에서 평범한 삶을 사는 30세 보험회사원 트루먼 버뱅크 아내와 홀어머니를 모시고 행복한 하루 하루를 보내던 어느 날, 하늘에서 조명이 떨어진다! </string>
+    <string name="popup_movie3_script">타인의 꿈에 들어가 생각을 훔치는 특수 보안요원 코브. 그를 이용해 라이벌 기업의 정보를 빼내고자 하는 사이토는 코브에게 생각을 훔치는 것이 아닌, 생각을 심는 ‘인셉션’ 작전을 제안한다.</string>
+    <string name="popup_movie4_script">해리의 생일을 축하하러 온 거인 해그리드는 해리가 모르고 있었던 해리의 진정한 정체를 알려주는데. 그것은 바로 해리가 굉장한 능력을 지닌 마법사라는 것! </string>
+    <string name="popup_movie5_script">임진왜란 발발로부터 7년이 지난 1598년 12월. 이순신(김윤석)은 왜군의 수장이던 도요토미 히데요시가 갑작스럽게 사망한 뒤 왜군들이 조선에서 황급히 퇴각하려 한다는 것을 알게 된다. </string>
+
+    <string name="popup_book1_title">나미야 잡화점의 기적</string>
+    <string name="popup_book2_title">지적 대화를 위한\n넓고 얕은 지식</string>
+    <string name="popup_book3_title">불편한 편의점</string>
+    <string name="popup_book4_title">구의 증명</string>
+    <string name="popup_book5_title">아주 작은 습관의 힘</string>
+
+    <string name="popup_book1_script">인생의 중요한 고비마다 찾아가고 싶은 우체통, 평범하지만 뭔가 하나를 마음속에 꼭 붙잡고 있는 우리들에게 보내는 답신과도 같은 소설.</string>
+    <string name="popup_book2_script">어렵고 딱딱하던 인문학 분야 판도를 뒤바꾼 책</string>
+    <string name="popup_book3_script">일상적 현실을 위트 있게 그린 경쾌한 작품과 인간의 내밀한 욕망을 기발한 상상력으로 풀어낸 스릴러 장르</string>
+    <string name="popup_book4_script">사랑하는 연인의 갑작스러운 죽음 이후 겪게 되는 상실과 애도의 과정을 통해 삶의 의미 혹은 죽음의 의미를 되묻는 소설이다.</string>
+    <string name="popup_book5_script">단계적이고 체계적인 자기계발 방법을 찾는 사람들을 위한 『아주 작은 습관의 힘』. </string>
+
 
     <string name="flight_search">최저가 검색</string>
     <string name="flight_store">검색 내역 저장</string>
