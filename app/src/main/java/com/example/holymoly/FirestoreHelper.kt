@@ -1,6 +1,5 @@
 package com.example.holymoly
 
-import android.annotation.SuppressLint
 import android.util.Log
 import com.example.holymoly.ui.drawer.TicketAdapter
 import com.example.holymoly.ui.drawer.TicketInform
@@ -8,8 +7,6 @@ import com.example.holymoly.ui.tab.BucketDoneInform
 import com.example.holymoly.ui.tab.BucketDoneItemAdapter
 import com.example.holymoly.ui.tab.BucketInform
 import com.example.holymoly.ui.tab.BucketItemAdapter
-import com.example.holymoly.ui.tab.UpcomingSchedulesAdapter
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -83,6 +80,7 @@ class FirestoreHelper {
                 }
         }
         adapter.notifyDataSetChanged()
+        items.clear()
     }
 
 
@@ -132,6 +130,7 @@ class FirestoreHelper {
                 .update("process", "true")
         }
         adapter.notifyDataSetChanged()
+        items.clear()
     }
 
     //버킷리스트 삭제하기 (Do & Done)
@@ -154,6 +153,7 @@ class FirestoreHelper {
                 }
         }
         adapter.notifyDataSetChanged()
+        items.clear()
         return message
     }
 
@@ -177,6 +177,7 @@ class FirestoreHelper {
 
         }
         adapter.notifyDataSetChanged()
+        items.clear()
         return message
     }
 

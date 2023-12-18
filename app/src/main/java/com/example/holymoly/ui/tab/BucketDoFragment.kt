@@ -73,7 +73,6 @@ class BucketDoFragment: Fragment() {
                 alertNonePick()
             }else {
                 fb.deleteBucketDoToFireStore(bucketSelectedList, bucketAdapter)
-                //bucketSelectedList.clear()
             }
         }
 
@@ -83,7 +82,6 @@ class BucketDoFragment: Fragment() {
                 alertNonePick()
             }else{
                 alertProcessDialog(bucketAdapter)
-                //bucketSelectedList.clear()
             }
         }
 
@@ -93,7 +91,6 @@ class BucketDoFragment: Fragment() {
                 alertNonePick()
             }else{
                 alertFinishDialog(bucketAdapter)
-                //bucketSelectedList.clear()
             }
         }
 
@@ -146,6 +143,7 @@ class BucketDoFragment: Fragment() {
         builder.setPositiveButton(R.string.bucket_alert_yes, listener)
         builder.setNegativeButton(R.string.bucket_alert_no, listener)
 
+
         builder.show()
     }
 
@@ -153,4 +151,5 @@ class BucketDoFragment: Fragment() {
     fun alertNonePick(){
         Toast.makeText(requireContext(), R.string.bucket_alert_none_item, Toast.LENGTH_SHORT).show()
     }
+
 }

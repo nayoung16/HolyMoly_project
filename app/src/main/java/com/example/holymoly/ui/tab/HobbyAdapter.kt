@@ -24,8 +24,8 @@ class HobbyAdapter ( )
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val binding = (holder as MyHobbyViewHolder).binding
         val resources = holder.itemView.context.resources
-        val textID = resources.getIdentifier("md_hobby_1", "string", "com.example.holymoly")
-        val photoID = resources.getIdentifier("hobby_1", "drawable", "com.example.holymoly")
+        val textID = resources.getIdentifier("md_hobby_${position+1}", "string", "com.example.holymoly")
+        val photoID = resources.getIdentifier("hobby_${position+1}", "drawable", "com.example.holymoly")
 
         binding.mdTravelBtnText.setText(textID)
         binding.mdTravelBtnImage.setImageResource(photoID)

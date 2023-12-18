@@ -62,6 +62,7 @@ class BucketItemAdapter ( )
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
     {
         val binding = BucketItemBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+
         return BucketItemHolder(binding)
     }
 
@@ -72,4 +73,5 @@ class BucketItemAdapter ( )
     /*fun setDataChangedListener(listener: DataChangedListener){
         this.changeListener = listener
     }*/
+    
 }
