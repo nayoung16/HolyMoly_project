@@ -81,7 +81,7 @@ class AddActivity : AppCompatActivity(){
 
             if (selectedYear != 0 && selectedMonth != 0 && selectedDay != 0) {  // 기존에 받아온 날짜 데이트피커로 넘기기
                 val selectedCalendar = Calendar.getInstance()
-                selectedCalendar.set(selectedYear, selectedMonth - 1, selectedDay)
+                selectedCalendar.set(selectedYear, selectedMonth - 1, selectedDay+1)
                 builder.setSelection(selectedCalendar.timeInMillis)
             }
 
