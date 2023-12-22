@@ -92,12 +92,14 @@ class FirestoreHelper {
             .collection("bucketDo")
             .addSnapshotListener{ qsnap, e ->
                 informs.clear()
-                for(doc in qsnap!!.documents){
-                    val time = doc["time"].toString()
-                    val title = doc["title"].toString()
-                    val context = doc["context"].toString()
-                    val process = doc["process"].toString().toBoolean()
-                    informs.add(BucketInform(time, title, context, process))
+                if (qsnap != null) {
+                    for(doc in qsnap!!.documents){
+                        val time = doc["time"].toString()
+                        val title = doc["title"].toString()
+                        val context = doc["context"].toString()
+                        val process = doc["process"].toString().toBoolean()
+                        informs.add(BucketInform(time, title, context, process))
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }
@@ -111,11 +113,13 @@ class FirestoreHelper {
             .collection("bucketDone")
             .addSnapshotListener{ qsnap, e ->
                 informs.clear()
-                for(doc in qsnap!!.documents){
-                    val time = doc["time"].toString()
-                    val title = doc["title"].toString()
-                    val context = doc["context"].toString()
-                    informs.add(BucketDoneInform(time, title, context))
+                if(qsnap != null) {
+                    for(doc in qsnap!!.documents){
+                        val time = doc["time"].toString()
+                        val title = doc["title"].toString()
+                        val context = doc["context"].toString()
+                        informs.add(BucketDoneInform(time, title, context))
+                    }
                 }
                 adapter.notifyDataSetChanged()
             }
