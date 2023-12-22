@@ -39,9 +39,7 @@ class FlightFragment : Fragment(), OnCountryItemSelectedListener {
 
 
         //나라 선택 어댑터
-
-
-        val countryList = listOf("ICN", "TYO", "DAD", "CDG", "JFK", "GUM", "PEK", "CEB", "TPE", "MEL")
+        val countryList = listOf("ICN", "CJU", "PUS", "TAE", "GMP", "RSU", "USN", "TYO", "DAD", "CDG", "JFK", "GUM", "PEK", "CEB", "TPE", "MEL")
         //출발 나라
         val countryAdapterFrom = FlightyCountryAdapter(requireContext(), binding.flightyFrom, countryList)
         countryAdapterFrom.setOnCountryItemSelectedListener(this)
@@ -73,8 +71,9 @@ class FlightFragment : Fragment(), OnCountryItemSelectedListener {
 
     //검색 내역 저장 - fireStore
     private fun storeTicket(){
+        val type = getFlightType()
         fireStore.storeTicketToFireStore(
-            makeTimeStamp(), departCountry, arriveCountry,
+            makeTimeStamp(), type, departCountry, arriveCountry,
             binding.departDate.text.toString(), binding.arriveDate.text.toString()
         )
 
@@ -107,7 +106,8 @@ class FlightFragment : Fragment(), OnCountryItemSelectedListener {
     //웹뷰 띄우기
     private fun setWebView() {
         val intent = Intent(requireContext(), FlightyWebView()::class.java)
-        intent.putExtra("type", this.resources.getString(R.string.flight_type_inter))
+        val type = getFlightType()
+        intent.putExtra("type", type)
         intent.putExtra("departCountry", departCountry)
         intent.putExtra("arriveCountry", arriveCountry)
         intent.putExtra("departDate", departDate)
@@ -121,6 +121,13 @@ class FlightFragment : Fragment(), OnCountryItemSelectedListener {
             binding.flightyFrom -> departCountry = countryItem
             binding.flightyTo -> arriveCountry = countryItem
         }
+    }
+
+    //국제선 or 국내선 type 확인
+    private fun getFlightType() : String {
+        //국내선 리스트
+        val domList = setOf("CJU", "PUS", "TAE", "ICN", "GMP", "RSU", "USN")
+        return if(arriveCountry in domList && departCountry in domList) "domestic" else  "international"
     }
 
     //여행 날짜 가져오기

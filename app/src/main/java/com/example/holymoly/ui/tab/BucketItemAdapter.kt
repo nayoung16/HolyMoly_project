@@ -11,9 +11,6 @@ interface CheckBucketListener{
     fun onCheckBucket(flag: Boolean, pos: Int, time: String)
 }
 
-/*interface DataChangedListener{
-    fun onDataChanged(flag: Boolean)
-}*/
 
 class BucketItemHolder(val binding: BucketItemBinding)
     : RecyclerView.ViewHolder(binding.root)
@@ -23,6 +20,7 @@ class BucketItemAdapter ( )
     private var listener : CheckBucketListener ?= null
     //private var changeListener : DataChangedListener ?= null
     private var datas : List<BucketInform> = mutableListOf()
+    var resetCheck = false
 
     init{
         val fb = FirestoreHelper()
@@ -51,6 +49,12 @@ class BucketItemAdapter ( )
 
         //체크박스
         val checkBtn = binding.bucketCheck
+        if(resetCheck){ //초기화
+            checkBtn.isChecked = false
+            if(position == datas.size-1){
+                resetCheck = false
+            }
+        }
         checkBtn.setOnClickListener{//리스너 등록
             if(checkBtn.isChecked)
                 listener?.onCheckBucket(true, position, datas[position].time)
