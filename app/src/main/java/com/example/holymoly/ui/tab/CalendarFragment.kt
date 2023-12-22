@@ -159,37 +159,50 @@ class CalendarFragment : Fragment(){
         )
 
         firestoreHelper.getMonthHolidaysFromFirestore(month){ holidayList ->
-            holidayList.forEach{ holiday ->
-                val startYear = holiday["start_year"].toString()
-                val startMonth = holiday["start_month"] as Long
-                val startMonth1 = if (startMonth.toInt() < 10) "0${startMonth.toInt()}" else (startMonth.toInt()).toString()
-                val startDate = holiday["start_date"] as Long
-                val startDate1 = if (startDate.toInt() < 10) "0${startDate.toInt()}" else (startDate.toInt()).toString()
-                val start = "$startYear$startMonth1$startDate1" // 일정 시작 날짜
+            if(holidayList.isNotEmpty()) {
+                holidayList.forEach { holiday ->
+                    val startYear = holiday["start_year"].toString()
+                    val startMonth = holiday["start_month"] as Long
+                    val startMonth1 =
+                        if (startMonth.toInt() < 10) "0${startMonth.toInt()}" else (startMonth.toInt()).toString()
+                    val startDate = holiday["start_date"] as Long
+                    val startDate1 =
+                        if (startDate.toInt() < 10) "0${startDate.toInt()}" else (startDate.toInt()).toString()
+                    val start = "$startYear$startMonth1$startDate1" // 일정 시작 날짜
 
-                val endYear = holiday["end_year"].toString()
-                val endMonth = holiday["end_month"] as Long
-                val endMonth1 = if (endMonth.toInt() < 10) "0${endMonth.toInt()}" else (endMonth.toInt()).toString()
-                val endDate = holiday["end_date"] as Long
-                val endDate1 = if (endDate.toInt() < 10) "0${endDate.toInt()}" else (endDate.toInt()).toString()
-                val end = "$endYear$endMonth1$endDate1" // 일정 끝 날짜
+                    val endYear = holiday["end_year"].toString()
+                    val endMonth = holiday["end_month"] as Long
+                    val endMonth1 =
+                        if (endMonth.toInt() < 10) "0${endMonth.toInt()}" else (endMonth.toInt()).toString()
+                    val endDate = holiday["end_date"] as Long
+                    val endDate1 =
+                        if (endDate.toInt() < 10) "0${endDate.toInt()}" else (endDate.toInt()).toString()
+                    val end = "$endYear$endMonth1$endDate1" // 일정 끝 날짜
 
-                // 클릭된 날짜가 해당 일정의 시작과 종료 날짜 사이에 있는지 확인
-                if(combinedDate.toInt() in start.toInt()..end.toInt()) {
-                    adapter.datas_holidays_title.add(holiday["holiday_title"].toString())
-                    adapter.datas_holidays_start_year.add(holiday["start_year"].toString())
-                    adapter.datas_holidays_start_month.add(holiday["start_month"].toString())
-                    adapter.datas_holidays_start_date.add(holiday["start_date"].toString())
-                    adapter.datas_holidays_end_year.add(holiday["end_year"].toString())
-                    adapter.datas_holidays_end_month.add(holiday["end_month"].toString())
-                    adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
-                    adapter.datas_categories.add(holiday["category"].toString())
+                    // 클릭된 날짜가 해당 일정의 시작과 종료 날짜 사이에 있는지 확인
+                    if (combinedDate.toInt() in start.toInt()..end.toInt()) {
+                        adapter.datas_holidays_title.add(holiday["holiday_title"].toString())
+                        adapter.datas_holidays_start_year.add(holiday["start_year"].toString())
+                        adapter.datas_holidays_start_month.add(holiday["start_month"].toString())
+                        adapter.datas_holidays_start_date.add(holiday["start_date"].toString())
+                        adapter.datas_holidays_end_year.add(holiday["end_year"].toString())
+                        adapter.datas_holidays_end_month.add(holiday["end_month"].toString())
+                        adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
+                        adapter.datas_categories.add(holiday["category"].toString())
+                    }
+                    binding.scheduleRecycler.post {
+                        binding.scheduleRecycler.adapter = adapter
+                        binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
+                    }
                 }
-
-                binding.scheduleRecycler.post {
-                    binding.scheduleRecycler.adapter = adapter
-                    binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
-                }
+            }
+            else{
+                binding.scheduleRecycler.adapter = UpcomingSchedulesAdapter(
+                    mutableListOf(), mutableListOf(), mutableListOf(),
+                    mutableListOf(), mutableListOf(), mutableListOf(),
+                    mutableListOf(), mutableListOf()
+                )
+                binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
             }
         }
 
