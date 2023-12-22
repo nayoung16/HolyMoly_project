@@ -279,8 +279,6 @@ class FirestoreHelper {
 
 
     fun getMonthHolidaysFromFirestore(this_month:Int, callback: (List<Map<String, Any>>) -> Unit) {
-        var holidayList = mutableListOf<Map<String, Any>>()
-
         val startQuery = db.collection("user")
             .document(userEmail!!)
             .collection("holiday")
@@ -293,6 +291,7 @@ class FirestoreHelper {
 
         // 문서가 변경될 때마다 콜백 함수 실행
         startQuery.addSnapshotListener { documents_start, startException -> // 문서 실시간 확인
+            var holidayList = mutableListOf<Map<String, Any>>()
             if (startException != null) {
                 Log.w(TAG, "Error getting start documents: ", startException)
                 callback(emptyList())
