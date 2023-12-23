@@ -1,10 +1,7 @@
 package com.example.holymoly.ui.drawer
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.holymoly.FirestoreHelper
 import com.example.holymoly.databinding.MyFlightTicketItemBinding
@@ -24,6 +21,7 @@ class TicketAdapter ( )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private var listener : SelectedTicketListener ?= null
     private var datas : List<TicketInform> = mutableListOf()
+    var resetCheck = false
 
     init{
         val fb = FirestoreHelper()
@@ -43,6 +41,12 @@ class TicketAdapter ( )
 
         //삭제 체크 박스
         val btn = binding.ticketDeleteBtn
+        if(resetCheck){ //초기화
+            btn.isChecked = false
+            if(position == datas.size-1){
+                resetCheck = false
+            }
+        }
         btn.setOnClickListener{//리스너 등록
             if(btn.isChecked)
                 listener?.onCheckTicket(true, position, datas[position].time)

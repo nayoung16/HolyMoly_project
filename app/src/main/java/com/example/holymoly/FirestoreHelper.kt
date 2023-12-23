@@ -79,6 +79,7 @@ class FirestoreHelper {
                     }
                 }
         }
+        adapter.resetCheck = true
         adapter.notifyDataSetChanged()
         items.clear()
     }
@@ -133,6 +134,7 @@ class FirestoreHelper {
                 .collection("bucketDo").document(time)
                 .update("process", "true")
         }
+        adapter.resetCheck = true
         adapter.notifyDataSetChanged()
         items.clear()
     }
@@ -156,6 +158,7 @@ class FirestoreHelper {
                     }
                 }
         }
+        adapter.resetCheck = true
         adapter.notifyDataSetChanged()
         items.clear()
         return message
@@ -180,16 +183,13 @@ class FirestoreHelper {
                 }
 
         }
+        adapter.resetCheck = true
         adapter.notifyDataSetChanged()
         items.clear()
         return message
     }
 
-    fun storeTicketToFireStore(time: String, departCountry: String, arriveCountry : String, departDate : String, arriveDate:String){
-        //국제선 or 국내선
-        val domList = setOf("CJU", "PUS", "TAE", "ICN", "GMP", "RSU", "USN")
-        val type : String = if(arriveCountry in domList && departCountry in domList) "domestic" else  "international"
-
+    fun storeTicketToFireStore(time: String, type: String, departCountry: String, arriveCountry : String, departDate : String, arriveDate:String){
         //필드 생성
         val data = hashMapOf(
             "time" to time,
@@ -247,6 +247,7 @@ class FirestoreHelper {
             }
 
         }
+        adapter.resetCheck = true
         adapter.notifyDataSetChanged()
         return message
     }
@@ -360,7 +361,7 @@ class FirestoreHelper {
                 .collection("holiday")
                 .document(delete_title)
                 .delete()
-                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                .addOnSuccessListener { Log.d("deleteDate", "DocumentSnapshot successfully deleted!") }
                 .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
 
         //upcomingschedules 어댑터랑 연결시켜주려고 했는데 잘 안되는둣...?

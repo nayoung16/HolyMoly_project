@@ -91,32 +91,34 @@ class CalendarFragment : Fragment(){
         }
 
         binding.calendarview.setOnMonthChangedListener { widget, date ->  // 달이 변경
-            // 초기화
-            binding.calendarview.removeDecorators()
-            binding.calendarview.invalidateDecorators()
-
-            binding.calendarview.addDecorators(     // 달력 넘어갔을 때 데코레이터 다시 추가
-                TodayDecorator(),
-                SatDecorator(),
-                SunDecorator(),
-                OtherMonth(date.month),
-                CustomDayDecorator(holyList1),
-                CustomDayDecorator(holyList2),
-                CustomDayDecorator(holyList3)
-            )
-
             c_year = date.year // 현재 달력 연도
             c_month = date.month // 현재 달력 월
-
             calldatabase(c_month)   // 일정 불러와서 도트 띄우기
         }
 
+    }
+
+    //초기화
+    fun initialize(c_month : Int){
+        binding.calendarview.removeDecorators()
+        binding.calendarview.invalidateDecorators()
+
+        binding.calendarview.addDecorators(     // 달력 넘어갔을 때 데코레이터 다시 추가
+            TodayDecorator(),
+            SatDecorator(),
+            SunDecorator(),
+            OtherMonth(c_month),
+            CustomDayDecorator(holyList1),
+            CustomDayDecorator(holyList2),
+            CustomDayDecorator(holyList3)
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun calldatabase(c_month: Int) {        // 도트 띄우기
         //데이터 읽어오고 ui 설정하는 함수
         firestoreHelper.getMonthHolidaysFromFirestore(c_month) { holidayList ->
+            initialize(c_month)
             var dates4 = mutableListOf<CalendarDay>()
 
             holidayList.forEach { holiday ->
@@ -152,13 +154,15 @@ class CalendarFragment : Fragment(){
 
         val combinedDate = "$year1$month1$day1" // 내가 클릭한 날 스트링으로 저장
 
-        val adapter = UpcomingSchedulesAdapter( // 빈 어댑터 생성
-            mutableListOf(), mutableListOf(), mutableListOf(),
-            mutableListOf(), mutableListOf(), mutableListOf(),
-            mutableListOf(), mutableListOf()
-        )
-
         firestoreHelper.getMonthHolidaysFromFirestore(month){ holidayList ->
+            var datas_holidays_title = mutableListOf<String>()
+            var datas_holidays_start_year = mutableListOf<String>()
+            var datas_holidays_start_month= mutableListOf<String>()
+            var datas_holidays_start_date= mutableListOf<String>()
+            var datas_holidays_end_year = mutableListOf<String>()
+            var datas_holidays_end_month= mutableListOf<String>()
+            var datas_holidays_end_date= mutableListOf<String>()
+            var datas_categories= mutableListOf<String>()
             if(holidayList.isNotEmpty()) {
                 holidayList.forEach { holiday ->
                     val startYear = holiday["start_year"].toString()
@@ -181,27 +185,27 @@ class CalendarFragment : Fragment(){
 
                     // 클릭된 날짜가 해당 일정의 시작과 종료 날짜 사이에 있는지 확인
                     if (combinedDate.toInt() in start.toInt()..end.toInt()) {
-                        adapter.datas_holidays_title.add(holiday["holiday_title"].toString())
-                        adapter.datas_holidays_start_year.add(holiday["start_year"].toString())
-                        adapter.datas_holidays_start_month.add(holiday["start_month"].toString())
-                        adapter.datas_holidays_start_date.add(holiday["start_date"].toString())
-                        adapter.datas_holidays_end_year.add(holiday["end_year"].toString())
-                        adapter.datas_holidays_end_month.add(holiday["end_month"].toString())
-                        adapter.datas_holidays_end_date.add(holiday["end_date"].toString())
-                        adapter.datas_categories.add(holiday["category"].toString())
-                    }
-                    binding.scheduleRecycler.post {
-                        binding.scheduleRecycler.adapter = adapter
-                        binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
+                        datas_holidays_title.add(holiday["holiday_title"].toString())
+                        datas_holidays_start_year.add(holiday["start_year"].toString())
+                        datas_holidays_start_month.add(holiday["start_month"].toString())
+                        datas_holidays_start_date.add(holiday["start_date"].toString())
+                        datas_holidays_end_year.add(holiday["end_year"].toString())
+                        datas_holidays_end_month.add(holiday["end_month"].toString())
+                        datas_holidays_end_date.add(holiday["end_date"].toString())
+                        datas_categories.add(holiday["category"].toString())
                     }
                 }
             }
-            else{
+            binding.scheduleRecycler.post {
                 binding.scheduleRecycler.adapter = UpcomingSchedulesAdapter(
-                    mutableListOf(), mutableListOf(), mutableListOf(),
-                    mutableListOf(), mutableListOf(), mutableListOf(),
-                    mutableListOf(), mutableListOf()
-                )
+                    datas_holidays_title,
+                    datas_holidays_start_year,
+                    datas_holidays_start_month,
+                    datas_holidays_start_date,
+                    datas_holidays_end_year,
+                    datas_holidays_end_month,
+                    datas_holidays_end_date,
+                    datas_categories)
                 binding.scheduleRecycler.layoutManager = LinearLayoutManager(requireContext())
             }
         }
