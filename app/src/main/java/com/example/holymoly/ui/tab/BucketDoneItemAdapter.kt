@@ -17,6 +17,7 @@ class BucketDoneItemAdapter ( )
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
     private var listener : CheckBucketDoneListener ?= null
     private var datas : List<BucketDoneInform> = mutableListOf()
+    var resetCheck = false
 
     init{
         val fb = FirestoreHelper()
@@ -34,6 +35,12 @@ class BucketDoneItemAdapter ( )
 
         //체크박스
         val checkBtn = binding.bucketCheck
+        if(resetCheck){ //초기화
+            checkBtn.isChecked = false
+            if(position == datas.size-1){
+                resetCheck = false
+            }
+        }
         checkBtn.setOnClickListener{//리스너 등록
             if(checkBtn.isChecked)
                 listener?.onCheckBucketDone(true, position, datas[position].time)
